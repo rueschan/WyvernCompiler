@@ -30,44 +30,37 @@ namespace Wyvern {
 
         static readonly Regex regex = new Regex(
 			@"                             
-                (?<And>             &&																								)-
-              | (?<Assign>          [=]																								)-
-			  | (?<BoolLiteral>		[(true)|(false)]						   														)-
-			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)[']		)-
-              | (?<Comment>         (?s)[/][*].*?[*][/]w																			)-
-              | (?<Identifier>      [a-zA-Z]+\w*																					)-
-              | (?<IntegerLiteral>	[-]?\d+																							)-
+                (?<And>             &&																								)
+              | (?<Assign>          [=]																								)
+			  | (?<BoolLiteral>		[(true)|(false)]						   														)
+			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)[']		)
+              | (?<Comment>         (?s)[/][*].*?[*][/]w																			)
+			  | (?<CurlyLeft>		[{]																								)
+			  | (?<CurlyRight>		[}]																								)
+			  | (?<Dif>				!=																								)
+			  | (?<Div>				[/]																								)
+			  | (?<Equal>			==																								)
+			  | (?<Function>		([a-zA-Z]+\w*\([\w\s,]*\))																		)
+			  | (?<Greater>			[>]																								)
+			  | (?<GreaterEqual>	[>=]																							)
+              | (?<Identifier>      [a-zA-Z]+\w*																					)
+              | (?<IntLiteral>		[-]?\d+																							)
               | (?<Less>            [<]																								)
+              | (?<LessEqual>       [<=]																							)
+			  | (?<Mod>				[%]																								)
               | (?<Mul>             [*]																								)
               | (?<Neg>             [-]																								)
               | (?<Newline>         \n																								)
+              | (?<Not>				!																								)
+              | (?<Or>				||																								)
               | (?<ParLeft>         [(]																								)
               | (?<ParRight>        [)]																								)
-              | (?<Plus>            [+]																								)              
-              | (?<True>            [#]t																							)
+              | (?<Plus>            [+]																								)
+			  | (?<Semicolon>		[;]																								)
 			  | (?<StrLiteral>		[""](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)*[""]	)
-              | (?<WhiteSpace>      \s                                         )     # Must go anywhere after Newline.
-              | (?<Other>           .                                          )     # Must be last: match any other character.
+              | (?<WhiteSpace>      \s																								)     # Must go anywhere after Newline.
+              | (?<Other>           .																								)     # Must be last: match any other character.
             ",
-
-            @"                             
-                (?<And>        [&]       )
-              | (?<Assign>     [=]       )
-              | (?<Comment>    ;.*       )
-              | (?<False>      [#]f      )
-              | (?<Identifier> [a-zA-Z]+ )
-              | (?<IntLiteral> \d+       )
-              | (?<Less>       [<]       )
-              | (?<Mul>        [*]       )
-              | (?<Neg>        [-]       )
-              | (?<Newline>    \n        )
-              | (?<ParLeft>    [(]       )
-              | (?<ParRight>   [)]       )
-              | (?<Plus>       [+]       )              
-              | (?<True>       [#]t      )
-              | (?<WhiteSpace> \s        )     # Must go anywhere after Newline.
-              | (?<Other>      .         )     # Must be last: match any other character.
-            ", 
             RegexOptions.IgnorePatternWhitespace 
                 | RegexOptions.Compiled
                 | RegexOptions.Multiline
@@ -75,12 +68,22 @@ namespace Wyvern {
 
         static readonly IDictionary<string, TokenCategory> keywords =
             new Dictionary<string, TokenCategory>() {
-                {"bool", TokenCategory.BOOL},
-                {"end", TokenCategory.END},
-                {"if", TokenCategory.IF},
-                {"int", TokenCategory.INT},
-                {"print", TokenCategory.PRINT},
-                {"then", TokenCategory.THEN}
+				{"break", TokenCategory.BOOL},
+				{"else", TokenCategory.ELSE},
+				{"elseif", TokenCategory.ELSEIF},
+				{"false", TokenCategory.FALSE},
+				{"if", TokenCategory.IF},
+				{"return", TokenCategory.RETURN},
+				{"true", TokenCategory.TRUE},
+				{"var", TokenCategory.VAR},
+				{"while", TokenCategory.WHILE},
+
+				//{"bool", TokenCategory.BOOL},
+    //            {"end", TokenCategory.END},
+    //            {"if", TokenCategory.IF},
+    //            {"int", TokenCategory.INT},
+    //            {"print", TokenCategory.PRINT},
+    //            {"then", TokenCategory.THEN}
             };
 
         static readonly IDictionary<string, TokenCategory> nonKeywords =
