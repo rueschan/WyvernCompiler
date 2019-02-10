@@ -1,0 +1,15 @@
+/* File: 001_ultimate.wyvern
+ * Prints the answer to the ultimate question of life, the
+ * universe, and everything.
+ * (C) 2019 Ariel Ortiz, ITESM CEM
+ */
+
+var answer;
+
+main() {
+    answer = 42;
+    prints("The answer to the ultimate question of life, ");
+    prints("the universe, and everything: ");
+    printi(answer);
+    println();
+}

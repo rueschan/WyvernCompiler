@@ -20,5 +20,10 @@ To run, type:
 Where <file_name> is the name of a Wyvern source file. You can try with
 these files:
 
-   * prog1.wyn
-   * prog2.wyn
+   * 001_ultimate.wyvern
+   * 002_binary.wyvern
+   * 003_palindrome.wyvern
+   * 004_factorial.wyvern
+   * 005_arrays.wyvern
+   * 006_next_day.wyvern
+   * 007_literals.wyvern
