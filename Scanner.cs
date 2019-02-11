@@ -29,10 +29,12 @@ namespace Wyvern {
         readonly string input;
 
         static readonly Regex regex = new Regex(
-			@"                             
+            @"                             
                 (?<And>             &&																								)
               | (?<Assign>          [=]																								)
 			  | (?<BoolLiteral>		[(true)|(false)]						   														)
+              | (?<BracketLeft>     \[                                                                                              )
+              | (?<BracketRight>    \]                                                                                              )
 			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)[']		)
               | (?<Comment>         (?s)[/][*].*?[*][/]w																			)
 			  | (?<CurlyLeft>		[{]																								)
@@ -90,15 +92,30 @@ namespace Wyvern {
             new Dictionary<string, TokenCategory>() {
                 {"And", TokenCategory.AND},
                 {"Assign", TokenCategory.ASSIGN},
-                {"False", TokenCategory.FALSE},
+                {"BoolLiteral", TokenCategory.BOOL_LITERAL},
+                {"BracketLeft", TokenCategory.BRACKET_LEFT},
+                {"BracketRight", TokenCategory.BRACKET_RIGHT},
+                {"CharLiteral", TokenCategory.CHAR_LITERAL},
+                {"CurlyLeft", TokenCategory.CURLY_LEFT},
+                {"CurlyRight", TokenCategory.CURLY_RIGHT},
+                {"Dif", TokenCategory.DIF},
+                {"Div", TokenCategory.DIV},
+                {"Equal", TokenCategory.EQUAL},
+                {"Function", TokenCategory.FUNCTION},
+                {"Greater", TokenCategory.GREATER},
+                {"GreaterEqual", TokenCategory.GREATER_EQUAL},
                 {"IntLiteral", TokenCategory.INT_LITERAL},
                 {"Less", TokenCategory.LESS},
+                {"LessEqual", TokenCategory.LESS_EQUAL},
+                {"Mod", TokenCategory.MOD},
                 {"Mul", TokenCategory.MUL},
                 {"Neg", TokenCategory.NEG},
+                {"Not", TokenCategory.NOT},
+                {"Or", TokenCategory.OR},
                 {"ParLeft", TokenCategory.PARENTHESIS_OPEN},
                 {"ParRight", TokenCategory.PARENTHESIS_CLOSE},
                 {"Plus", TokenCategory.PLUS},
-                {"True", TokenCategory.TRUE}                
+                {"StrLiteral", TokenCategory.STR_LITERAL}      
             };
 
         public Scanner(string input) {
