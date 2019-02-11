@@ -33,7 +33,7 @@ namespace Wyvern
 		static readonly Regex regex = new Regex(
 			@"                             
                 (?<And>             &&																								)
-              | (?<Assign>          [=]																								)
+              | (?<Assign>          [^<>=]=[^<>=]																					)
 			  | (?<BoolLiteral>		^(true|false)$						   															)
               | (?<BracketLeft>     \[                                                                                              )
               | (?<BracketRight>    \]                                                                                              )
@@ -43,25 +43,27 @@ namespace Wyvern
 			  | (?<CommentInit>		(\/\*).*																						)
 			  | (?<CurlyLeft>		[{]																								)
 			  | (?<CurlyRight>		[}]																								)
+			  | (?<Decrement>		--																								)			  
 			  | (?<Dif>				!=																								)
 			  | (?<Div>				[/]																								)
 			  | (?<Equal>			==																								)
-			  | (?<Function>		[a-zA-Z]\w*\(.*\)																				)
-			  | (?<Greater>			[>]																								)
-			  | (?<GreaterEqual>	[>=]																							)
+			  | (?<Function>		[a-zA-Z]\w*\(.*?\)																				)
+			  | (?<Greater>			>[^<>=]																							)
+			  | (?<GreaterEqual>	>=																								)
               | (?<Identifier>      [a-zA-Z]+\w*																					)
-              | (?<IntLiteral>		[-]?\d+																							)
-              | (?<Less>            [<]																								)
-              | (?<LessEqual>       [<=]																							)
+              | (?<Increment>       \+\+																								)
+			  | (?<IntLiteral>		[-]?\d+																							)
+              | (?<Less>            <[^<>=]																							)
+              | (?<LessEqual>       <=																								)
 			  | (?<Mod>				[%]																								)
               | (?<Mul>             [*]																								)
-              | (?<Neg>             [-]																								)
+              | (?<Neg>             [^-]-[^-=]																						)
               | (?<Newline>         \n																								)
               | (?<Not>				!																								)
               | (?<Or>				[|]{2}																							)
               | (?<ParLeft>         [(]																								)
               | (?<ParRight>        [)]																								)
-              | (?<Plus>            [+]																								)
+              | (?<Plus>            [^+]\+[^+=]																						)
 			  | (?<Semicolon>		[;]																								)
 			  | (?<StrLiteral>		[""](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)*[""]	)
               | (?<WhiteSpace>      \s																								)     # Must go anywhere after Newline.
@@ -88,6 +90,15 @@ namespace Wyvern
 
 		static readonly IDictionary<string, TokenCategory> nonKeywords =
 			new Dictionary<string, TokenCategory>() {
+				// Double operators
+				{"Decrement", TokenCategory.DECREMENT},
+				{"Dif", TokenCategory.DIF},
+				{"Equal", TokenCategory.EQUAL},
+				{"Increment", TokenCategory.INCREMENT},
+				{"GreaterEqual", TokenCategory.GREATER_EQUAL},
+				{"LessEqual", TokenCategory.LESS_EQUAL},
+
+				// Single operators
 				{"And", TokenCategory.AND},
 				{"Assign", TokenCategory.ASSIGN},
 				{"BoolLiteral", TokenCategory.BOOL_LITERAL},
@@ -96,15 +107,11 @@ namespace Wyvern
 				{"CharLiteral", TokenCategory.CHAR_LITERAL},
 				{"CurlyLeft", TokenCategory.CURLY_LEFT},
 				{"CurlyRight", TokenCategory.CURLY_RIGHT},
-				{"Dif", TokenCategory.DIF},
 				{"Div", TokenCategory.DIV},
-				{"Equal", TokenCategory.EQUAL},
 				{"Function", TokenCategory.FUNCTION},
 				{"Greater", TokenCategory.GREATER},
-				{"GreaterEqual", TokenCategory.GREATER_EQUAL},
 				{"IntLiteral", TokenCategory.INT_LITERAL},
 				{"Less", TokenCategory.LESS},
-				{"LessEqual", TokenCategory.LESS_EQUAL},
 				{"Mod", TokenCategory.MOD},
 				{"Mul", TokenCategory.MUL},
 				{"Neg", TokenCategory.NEG},
