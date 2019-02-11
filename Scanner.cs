@@ -46,7 +46,7 @@ namespace Wyvern
 			  | (?<Dif>				!=																								)
 			  | (?<Div>				[/]																								)
 			  | (?<Equal>			==																								)
-			  | (?<Function>		([a-zA-Z]+\w*\([\w\s,]*\))																		)
+			  | (?<Function>		[a-zA-Z]\w*\(.*\)																		)
 			  | (?<Greater>			[>]																								)
 			  | (?<GreaterEqual>	[>=]																							)
               | (?<Identifier>      [a-zA-Z]+\w*																					)
