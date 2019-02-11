@@ -22,21 +22,25 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Wyvern {
+namespace Wyvern
+{
 
-    class Scanner {
+	class Scanner
+	{
 
-        readonly string input;
+		readonly string input;
 
-        static readonly Regex regex = new Regex(
-            @"                             
+		static readonly Regex regex = new Regex(
+			@"                             
                 (?<And>             &&																								)
               | (?<Assign>          [=]																								)
-			  | (?<BoolLiteral>		[(true)|(false)]						   														)
+			  | (?<BoolLiteral>		^(true|false)$						   															)
               | (?<BracketLeft>     \[                                                                                              )
               | (?<BracketRight>    \]                                                                                              )
 			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)[']		)
-              | (?<Comment>         (?s)[/][*].*?[*][/]w																			)
+              | (?<Comment>         [/]{2}																							)
+			  | (?<CommentEnd>		.*(\*\/)																						)
+			  | (?<CommentInit>		(\/\*).*																						)
 			  | (?<CurlyLeft>		[{]																								)
 			  | (?<CurlyRight>		[}]																								)
 			  | (?<Dif>				!=																								)
@@ -54,7 +58,7 @@ namespace Wyvern {
               | (?<Neg>             [-]																								)
               | (?<Newline>         \n																								)
               | (?<Not>				!																								)
-              | (?<Or>				||																								)
+              | (?<Or>				[|]{2}																							)
               | (?<ParLeft>         [(]																								)
               | (?<ParRight>        [)]																								)
               | (?<Plus>            [+]																								)
@@ -63,13 +67,13 @@ namespace Wyvern {
               | (?<WhiteSpace>      \s																								)     # Must go anywhere after Newline.
               | (?<Other>           .																								)     # Must be last: match any other character.
             ",
-            RegexOptions.IgnorePatternWhitespace 
-                | RegexOptions.Compiled
-                | RegexOptions.Multiline
-            );
+			RegexOptions.IgnorePatternWhitespace
+				| RegexOptions.Compiled
+				| RegexOptions.Multiline
+			);
 
-        static readonly IDictionary<string, TokenCategory> keywords =
-            new Dictionary<string, TokenCategory>() {
+		static readonly IDictionary<string, TokenCategory> keywords =
+			new Dictionary<string, TokenCategory>() {
 				{"break", TokenCategory.BOOL},
 				{"else", TokenCategory.ELSE},
 				{"elseif", TokenCategory.ELSEIF},
@@ -80,103 +84,125 @@ namespace Wyvern {
 				{"var", TokenCategory.VAR},
 				{"while", TokenCategory.WHILE},
 
-				//{"bool", TokenCategory.BOOL},
-    //            {"end", TokenCategory.END},
-    //            {"if", TokenCategory.IF},
-    //            {"int", TokenCategory.INT},
-    //            {"print", TokenCategory.PRINT},
-    //            {"then", TokenCategory.THEN}
-            };
+			};
 
-        static readonly IDictionary<string, TokenCategory> nonKeywords =
-            new Dictionary<string, TokenCategory>() {
-                {"And", TokenCategory.AND},
-                {"Assign", TokenCategory.ASSIGN},
-                {"BoolLiteral", TokenCategory.BOOL_LITERAL},
-                {"BracketLeft", TokenCategory.BRACKET_LEFT},
-                {"BracketRight", TokenCategory.BRACKET_RIGHT},
-                {"CharLiteral", TokenCategory.CHAR_LITERAL},
-                {"CurlyLeft", TokenCategory.CURLY_LEFT},
-                {"CurlyRight", TokenCategory.CURLY_RIGHT},
-                {"Dif", TokenCategory.DIF},
-                {"Div", TokenCategory.DIV},
-                {"Equal", TokenCategory.EQUAL},
-                {"Function", TokenCategory.FUNCTION},
-                {"Greater", TokenCategory.GREATER},
-                {"GreaterEqual", TokenCategory.GREATER_EQUAL},
-                {"IntLiteral", TokenCategory.INT_LITERAL},
-                {"Less", TokenCategory.LESS},
-                {"LessEqual", TokenCategory.LESS_EQUAL},
-                {"Mod", TokenCategory.MOD},
-                {"Mul", TokenCategory.MUL},
-                {"Neg", TokenCategory.NEG},
-                {"Not", TokenCategory.NOT},
-                {"Or", TokenCategory.OR},
-                {"ParLeft", TokenCategory.PARENTHESIS_OPEN},
-                {"ParRight", TokenCategory.PARENTHESIS_CLOSE},
-                {"Plus", TokenCategory.PLUS},
-                {"StrLiteral", TokenCategory.STR_LITERAL}      
-            };
+		static readonly IDictionary<string, TokenCategory> nonKeywords =
+			new Dictionary<string, TokenCategory>() {
+				{"And", TokenCategory.AND},
+				{"Assign", TokenCategory.ASSIGN},
+				{"BoolLiteral", TokenCategory.BOOL_LITERAL},
+				{"BracketLeft", TokenCategory.BRACKET_LEFT},
+				{"BracketRight", TokenCategory.BRACKET_RIGHT},
+				{"CharLiteral", TokenCategory.CHAR_LITERAL},
+				{"CurlyLeft", TokenCategory.CURLY_LEFT},
+				{"CurlyRight", TokenCategory.CURLY_RIGHT},
+				{"Dif", TokenCategory.DIF},
+				{"Div", TokenCategory.DIV},
+				{"Equal", TokenCategory.EQUAL},
+				{"Function", TokenCategory.FUNCTION},
+				{"Greater", TokenCategory.GREATER},
+				{"GreaterEqual", TokenCategory.GREATER_EQUAL},
+				{"IntLiteral", TokenCategory.INT_LITERAL},
+				{"Less", TokenCategory.LESS},
+				{"LessEqual", TokenCategory.LESS_EQUAL},
+				{"Mod", TokenCategory.MOD},
+				{"Mul", TokenCategory.MUL},
+				{"Neg", TokenCategory.NEG},
+				{"Not", TokenCategory.NOT},
+				{"Or", TokenCategory.OR},
+				{"ParLeft", TokenCategory.PARENTHESIS_OPEN},
+				{"ParRight", TokenCategory.PARENTHESIS_CLOSE},
+				{"Plus", TokenCategory.PLUS},
+				{"StrLiteral", TokenCategory.STR_LITERAL}
+			};
 
-        public Scanner(string input) {
-            this.input = input;
-        }
+		public Scanner(string input)
+		{
+			this.input = input;
+		}
 
-        public IEnumerable<Token> Start() {
+		public IEnumerable<Token> Start()
+		{
 
-            var row = 1;
-            var columnStart = 0;
+			var row = 1;
+			var columnStart = 0;
+			var inComment = false;
 
-            Func<Match, TokenCategory, Token> newTok = (m, tc) =>
-                new Token(m.Value, tc, row, m.Index - columnStart + 1);
+			Func<Match, TokenCategory, Token> newTok = (m, tc) =>
+				new Token(m.Value, tc, row, m.Index - columnStart + 1);
 
-            foreach (Match m in regex.Matches(input)) {
+			foreach (Match m in regex.Matches(input))
+			{
 
-                if (m.Groups["Newline"].Success) {
+				if (inComment
+					&& !m.Groups["CommentEnd"].Success)
+				{
+					if (m.Groups["Newline"].Success) row++;
+					// Inside a comment.
 
-                    // Found a new line.
-                    row++;
-                    columnStart = m.Index + m.Length;
+				}
+				else if (m.Groups["Newline"].Success)
+				{
 
-                } else if (m.Groups["WhiteSpace"].Success 
-                    || m.Groups["Comment"].Success) {
+					// Found a new line.
+					row++;
+					columnStart = m.Index + m.Length;
 
-                    // Skip white space and comments.
+				}
+				else if (m.Groups["WhiteSpace"].Success
+				  || m.Groups["Comment"].Success
+				  || m.Groups["CommentInit"].Success
+				  || m.Groups["CommentEnd"].Success)
+				{
 
-                } else if (m.Groups["Identifier"].Success) {
+					if (m.Groups["CommentInit"].Success) inComment = true;
+					else if (m.Groups["CommentEnd"].Success) inComment = false;
+					// Skip white space and comments.
 
-                    if (keywords.ContainsKey(m.Value)) {
+				}
 
-                        // Matched string is a Buttercup keyword.
-                        yield return newTok(m, keywords[m.Value]);                                               
+				else if (m.Groups["Identifier"].Success)
+				{
 
-                    } else { 
+					if (keywords.ContainsKey(m.Value))
+					{
 
-                        // Otherwise it's just a plain identifier.
-                        yield return newTok(m, TokenCategory.IDENTIFIER);
-                    }
+						yield return newTok(m, keywords[m.Value]);
 
-                } else if (m.Groups["Other"].Success) {
+					}
+					else
+					{
 
-                    // Found an illegal character.
-                    yield return newTok(m, TokenCategory.ILLEGAL_CHAR);
+						yield return newTok(m, TokenCategory.IDENTIFIER);
+					}
 
-                } else {
+				}
+				else if (m.Groups["Other"].Success)
+				{
 
-                    // Match must be one of the non keywords.
-                    foreach (var name in nonKeywords.Keys) {
-                        if (m.Groups[name].Success) {
-                            yield return newTok(m, nonKeywords[name]);
-                            break;
-                        }
-                    }
-                }
-            }
+					// Found an illegal character.
+					yield return newTok(m, TokenCategory.ILLEGAL_CHAR);
 
-            yield return new Token(null, 
-                                   TokenCategory.EOF, 
-                                   row, 
-                                   input.Length - columnStart + 1);
-        }
-    }
+				}
+				else
+				{
+
+					// Match must be one of the non keywords.
+					foreach (var name in nonKeywords.Keys)
+					{
+						if (m.Groups[name].Success)
+						{
+							yield return newTok(m, nonKeywords[name]);
+							break;
+						}
+					}
+				}
+			}
+
+			yield return new Token(null,
+								   TokenCategory.EOF,
+								   row,
+								   input.Length - columnStart + 1);
+		}
+	}
 }

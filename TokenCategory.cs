@@ -37,6 +37,7 @@ namespace Wyvern {
         EOF,
         EQUAL,
         FALSE,
+		FUNCTION,
         GREATER,
         GREATER_EQUAL,
         IDENTIFIER,
