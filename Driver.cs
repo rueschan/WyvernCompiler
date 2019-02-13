@@ -1,3 +1,11 @@
+/* Driver.cs
+ * Wyvern Compiler
+ * Authors:
+ *			A01370880 Rubén Escalante Chan
+ *			A01371036 Santiago Nakakawa Bernal
+ *			A01371240 Iván Rangel Varela
+ */
+
 /*
   Wyvern compiler - Program driver.
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM

@@ -1,3 +1,11 @@
+/* Scanner.cs
+ * Wyvern Compiler
+ * Authors:
+ *			A01370880 Rubén Escalante Chan
+ *			A01371036 Santiago Nakakawa Bernal
+ *			A01371240 Iván Rangel Varela
+ */
+
 /*
   Wyvern compiler - This class performs the lexical analysis, 
   (a.k.a. scanning).
@@ -38,6 +46,7 @@ namespace Wyvern
               | (?<BracketLeft>     \[                                                                                              )
               | (?<BracketRight>    \]                                                                                              )
 			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)[']		)
+              | (?<Comma>			,																						)
               | (?<Comment>         [/]{2}.*																						)
 			  | (?<CommentEnd>		.*(\*\/)																						)
 			  | (?<CommentInit>		(\/\*).*																						)
@@ -47,7 +56,6 @@ namespace Wyvern
 			  | (?<Dif>				!=																								)
 			  | (?<Div>				[/]																								)
 			  | (?<Equal>			==																								)
-			  | (?<Function>		[a-zA-Z]\w*\(.*?\)																				)
 			  | (?<Greater>			>[^<>=]																							)
 			  | (?<GreaterEqual>	>=																								)
               | (?<Identifier>      [a-zA-Z]+\w*																					)
@@ -105,10 +113,10 @@ namespace Wyvern
 				{"BracketLeft", TokenCategory.BRACKET_LEFT},
 				{"BracketRight", TokenCategory.BRACKET_RIGHT},
 				{"CharLiteral", TokenCategory.CHAR_LITERAL},
+				{"Comma", TokenCategory.COMMA},
 				{"CurlyLeft", TokenCategory.CURLY_LEFT},
 				{"CurlyRight", TokenCategory.CURLY_RIGHT},
 				{"Div", TokenCategory.DIV},
-				{"Function", TokenCategory.FUNCTION},
 				{"Greater", TokenCategory.GREATER},
 				{"IntLiteral", TokenCategory.INT_LITERAL},
 				{"Less", TokenCategory.LESS},

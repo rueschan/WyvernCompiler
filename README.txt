@@ -5,6 +5,11 @@ This program is free software. You may redistribute it under the terms of
 the GNU General Public License version 3 or later. See license.txt for 
 details.    
 
+Authors:
+ *	A01370880 Rubén Escalante Chan
+ *	A01371036 Santiago Nakakawa Bernal
+ *	A01371240 Iván Rangel Varela
+
 Included in this release:
 
    * Lexical analysis
