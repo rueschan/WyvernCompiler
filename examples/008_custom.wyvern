@@ -4,9 +4,21 @@
  * (C) 2019 Ariel Ortiz, ITESM CEM
  */
 
-var number0, n2;
+var answer, n;
 var camelCase;
 var under_score;
 
-main() {
+func(a, b, c) {}
+
+main(a, b, c) {
+    while () {
+        answer = ;
+    }
+
+    func();
+
+    if (){}
+    elseif () {}
+    elseif () {}
+    else {}
 }

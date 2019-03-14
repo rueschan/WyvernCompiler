@@ -42,6 +42,20 @@ namespace Wyvern
 				TokenCategory.SEMICOLON
 			};
 
+		static readonly ISet<TokenCategory> firstOfExpr =
+			new HashSet<TokenCategory>() {
+				TokenCategory.PLUS,
+				TokenCategory.NEG,
+				TokenCategory.NOT,
+				TokenCategory.IDENTIFIER,
+				TokenCategory.BRACKET_LEFT,
+				TokenCategory.BOOL_LITERAL,
+				TokenCategory.INT_LITERAL,
+				TokenCategory.CHAR_LITERAL,
+				TokenCategory.STR_LITERAL,
+				TokenCategory.PARENTHESIS_OPEN
+			};
+
 		IEnumerator<Token> tokenStream;
 
 		public Parser(IEnumerator<Token> tokenStream)
@@ -132,38 +146,114 @@ namespace Wyvern
 		public void Stmt() {
 			switch (CurrentToken) {
 				case TokenCategory.IDENTIFIER:
-					VarDef();
+					Expect(TokenCategory.IDENTIFIER);
+					switch (CurrentToken) {
+						case TokenCategory.ASSIGN:
+							StmtAssign();
+							break;
+						case TokenCategory.INCREMENT:
+							StmtIncr();
+							break;
+						case TokenCategory.DECREMENT:
+							StmtDecr();
+							break;
+						case TokenCategory.PARENTHESIS_OPEN:
+							StmtFunCall();
+							break;
+					}
 					break;
 				case TokenCategory.IF:
-					FunDef();
+					StmtIf();
 					break;
 				case TokenCategory.WHILE:
-					FunDef();
+					StmtWhile();
 					break;
 				case TokenCategory.BREAK:
-					FunDef();
+					StmtBreak();
 					break;
 				case TokenCategory.RETURN:
-					FunDef();
+					StmtReturn();
 					break;
 				case TokenCategory.SEMICOLON:
-					FunDef();
+					StmtEmpty();
 					break;
 				default:
 					throw new SyntaxError(firstOfStmt, tokenStream.Current);
 			}
 		}
-		public void StmtAssign() {}
-		public void StmtIncr() {}
-		public void StmtDecr() {}
-		public void StmtFunCall() {}
-		public void FunCall() {}
-		public void ExprList() {}
-		public void ExprListCont() {}
-		public void StmtIf() {}
-		public void ElseIfList() {}
-		public void Else() {}
-		public void StmtWhile() {}
+		public void StmtAssign() {
+			Expect(TokenCategory.ASSIGN);
+			Expr();
+			Expect(TokenCategory.SEMICOLON);
+		}
+		public void StmtIncr() {
+			Expect(TokenCategory.INCREMENT);
+			Expect(TokenCategory.SEMICOLON);
+		}
+		public void StmtDecr() {
+			Expect(TokenCategory.DECREMENT);
+			Expect(TokenCategory.SEMICOLON);
+		}
+		public void StmtFunCall() {
+			FunCall();
+			Expect(TokenCategory.SEMICOLON);
+		}
+		public void FunCall() {
+			Expect(TokenCategory.PARENTHESIS_OPEN);
+			ExprList();
+			Expect(TokenCategory.PARENTHESIS_CLOSE);
+		}
+		public void ExprList() {
+			if (firstOfExpr.Contains(CurrentToken)) {
+				Expr();
+				ExprListCont();
+			}
+		}
+		public void ExprListCont() {
+			while (CurrentToken == TokenCategory.COMMA) {
+				Expect(TokenCategory.COMMA);
+				Expr();
+			}
+		}
+		public void StmtIf() {
+			Expect(TokenCategory.IF);
+			Expect(TokenCategory.PARENTHESIS_OPEN);
+			Expr();
+			Expect(TokenCategory.PARENTHESIS_CLOSE);
+			Expect(TokenCategory.CURLY_LEFT);
+			StmtList();
+			Expect(TokenCategory.CURLY_RIGHT);
+			ElseIfList();
+			Else();
+		}
+		public void ElseIfList() {
+			while (CurrentToken == TokenCategory.ELSEIF) {
+				Expect(TokenCategory.ELSEIF);
+				Expect(TokenCategory.PARENTHESIS_OPEN);
+				Expr();
+				Expect(TokenCategory.PARENTHESIS_CLOSE);
+				Expect(TokenCategory.CURLY_LEFT);
+				StmtList();
+				Expect(TokenCategory.CURLY_RIGHT);
+			}
+		}
+		public void Else() {
+			if (CurrentToken == TokenCategory.ELSE) {
+				Expect(TokenCategory.ELSE);
+				Expect(TokenCategory.CURLY_LEFT);
+				StmtList();
+				Expect(TokenCategory.CURLY_RIGHT);
+			}
+		}
+		public void StmtWhile() {
+			Expect(TokenCategory.WHILE);
+			Expect(TokenCategory.PARENTHESIS_OPEN);
+			Expr();
+			Expect(TokenCategory.PARENTHESIS_CLOSE);
+			Expect(TokenCategory.CURLY_LEFT);
+			StmtList();
+			Expect(TokenCategory.CURLY_RIGHT);
+		}
 		public void StmtBreak() {}
 		public void StmtReturn() {}
 		public void StmtEmpty() {}
@@ -174,6 +264,7 @@ namespace Wyvern
 		public void OpComp() {}
 		public void ExprRel() {}
 		public void OpRel() {}
+		// Pollo
 		public void ExprAdd() {}
 		public void OpAdd() {}
 		public void ExprMul() {}
