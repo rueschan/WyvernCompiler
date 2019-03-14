@@ -65,6 +65,7 @@ namespace Wyvern {
         PARENTHESIS_CLOSE,
         PLUS,
         RETURN,
+		SEMICOLON,
         STR_LITERAL,
         TRUE,
         VAR,

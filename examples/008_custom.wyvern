@@ -4,7 +4,7 @@
  * (C) 2019 Ariel Ortiz, ITESM CEM
  */
 
-var number0;
+var number0, n2;
 var camelCase;
 var under_score;
 

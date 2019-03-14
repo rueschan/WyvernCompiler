@@ -41,12 +41,12 @@ namespace Wyvern
 		static readonly Regex regex = new Regex(
 			@"                             
                 (?<And>             &&																								)
-              | (?<Assign>          [^<>=]=[^<>=]																					)
+              | (?<Assign>          =																					)
 			  | (?<BoolLiteral>		^(true|false)$						   															)
               | (?<BracketLeft>     \[                                                                                              )
               | (?<BracketRight>    \]                                                                                              )
-			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)[']		)
-              | (?<Comma>			,																						)
+			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]|(u[a-fA-F0-9]{6})))?|[^\\\n\r\t\f'""]?)[']				)
+              | (?<Comma>			,																								)
               | (?<Comment>         [/]{2}.*																						)
 			  | (?<CommentEnd>		.*(\*\/)																						)
 			  | (?<CommentInit>		(\/\*).*																						)
@@ -56,24 +56,24 @@ namespace Wyvern
 			  | (?<Dif>				!=																								)
 			  | (?<Div>				[/]																								)
 			  | (?<Equal>			==																								)
-			  | (?<Greater>			>[^<>=]																							)
+			  | (?<Greater>			>																							)
 			  | (?<GreaterEqual>	>=																								)
               | (?<Identifier>      [a-zA-Z]+\w*																					)
-              | (?<Increment>       \+\+																								)
+              | (?<Increment>       \+\+																							)
 			  | (?<IntLiteral>		[-]?\d+																							)
-              | (?<Less>            <[^<>=]																							)
+              | (?<Less>            <																							)
               | (?<LessEqual>       <=																								)
 			  | (?<Mod>				[%]																								)
               | (?<Mul>             [*]																								)
-              | (?<Neg>             [^-]-[^-=]																						)
+              | (?<Neg>             -																						)
               | (?<Newline>         \n																								)
               | (?<Not>				!																								)
               | (?<Or>				[|]{2}																							)
               | (?<ParLeft>         [(]																								)
               | (?<ParRight>        [)]																								)
-              | (?<Plus>            [^+]\+[^+=]																						)
+              | (?<Plus>            \+																						)
 			  | (?<Semicolon>		[;]																								)
-			  | (?<StrLiteral>		[""](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]| ([u][a - fA - F0 - 9]{6})))?|[^\\\n\r\t\f'""]?)*[""]	)
+			  | (?<StrLiteral>		[""](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]|([u][a-fA-F0-9]{6})))?|[^\\\n\r\t\f""']?)*[""]			)
               | (?<WhiteSpace>      \s																								)     # Must go anywhere after Newline.
               | (?<Other>           .																								)     # Must be last: match any other character.
             ",
@@ -128,6 +128,7 @@ namespace Wyvern
 				{"ParLeft", TokenCategory.PARENTHESIS_OPEN},
 				{"ParRight", TokenCategory.PARENTHESIS_CLOSE},
 				{"Plus", TokenCategory.PLUS},
+				{"Semicolon", TokenCategory.SEMICOLON},
 				{"StrLiteral", TokenCategory.STR_LITERAL}
 			};
 

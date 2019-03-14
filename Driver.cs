@@ -1,9 +1,9 @@
 /* Driver.cs
  * Wyvern Compiler
  * Authors:
- *			A01370880 Rubén Escalante Chan
+ *			A01370880 Rubï¿½n Escalante Chan
  *			A01371036 Santiago Nakakawa Bernal
- *			A01371240 Iván Rangel Varela
+ *			A01371240 Ivï¿½n Rangel Varela
  */
 
 /*
@@ -76,21 +76,19 @@ namespace Wyvern {
             try {            
                 var inputPath = args[0];                
                 var input = File.ReadAllText(inputPath);
-                
-                Console.WriteLine(String.Format(
-                    "===== Tokens from: \"{0}\" =====", inputPath)
-                );
-                var count = 1;
-                foreach (var tok in new Scanner(input).Start()) {
-                    Console.WriteLine(String.Format("[{0}] {1}", 
-                                                    count++, tok)
-                    );
+                var parser = new Parser(new Scanner(input).Start().GetEnumerator());
+                parser.Program();
+                Console.WriteLine("Syntax OK.");
+
+            } catch (Exception e) {
+
+                if (e is FileNotFoundException || e is SyntaxError) {
+                    Console.Error.WriteLine(e.Message);
+                    Environment.Exit(1);
                 }
-                
-            } catch (FileNotFoundException e) {
-                Console.Error.WriteLine(e.Message);
-                Environment.Exit(1);
-            }                
+
+                throw;
+            }
         }
 
         //-----------------------------------------------------------
