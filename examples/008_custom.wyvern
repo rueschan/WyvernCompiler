@@ -9,6 +9,4 @@ var camelCase;
 var under_score;
 
 main() {
-    answer = 42;
-    printi(answer);
 }

@@ -55,22 +55,19 @@ namespace Wyvern
 			get { return tokenStream.Current.Category; }
 		}
 
-		public Token Expect(TokenCategory category)
-		{
-			if (CurrentToken == category)
-			{
-				Token current = tokenStream.Current;
-				tokenStream.MoveNext();
-				return current;
-			}
-			else
-			{
-				throw new SyntaxError(category, tokenStream.Current);
-			}
-		}
+		public Token Expect(TokenCategory category) {
+            if (CurrentToken == category) {
+                Token current = tokenStream.Current;
+                tokenStream.MoveNext();
+                return current;
+            } else {
+                throw new SyntaxError(category, tokenStream.Current);                
+            }
+        }
 
 		public void Program() {
 			DefList();
+			Expect(TokenCategory.EOF);
 		}
 		public void DefList() {
 			while (firstOfDef.Contains(CurrentToken)) {
@@ -133,7 +130,28 @@ namespace Wyvern
 			}
 		}
 		public void Stmt() {
-			
+			switch (CurrentToken) {
+				case TokenCategory.IDENTIFIER:
+					VarDef();
+					break;
+				case TokenCategory.IF:
+					FunDef();
+					break;
+				case TokenCategory.WHILE:
+					FunDef();
+					break;
+				case TokenCategory.BREAK:
+					FunDef();
+					break;
+				case TokenCategory.RETURN:
+					FunDef();
+					break;
+				case TokenCategory.SEMICOLON:
+					FunDef();
+					break;
+				default:
+					throw new SyntaxError(firstOfStmt, tokenStream.Current);
+			}
 		}
 		public void StmtAssign() {}
 		public void StmtIncr() {}

@@ -36,7 +36,8 @@ namespace Wyvern {
 
         //-----------------------------------------------------------
         static readonly string[] ReleaseIncludes = {
-            "Lexical analysis"
+            "Lexical analysis",
+            "Syntactic analysis"
         };
 
         //-----------------------------------------------------------
