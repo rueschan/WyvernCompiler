@@ -29,8 +29,6 @@ namespace Wyvern {
     enum TokenCategory {
         AND,
         ASSIGN,
-        BOOL,
-        BOOL_LITERAL,
         BRACKET_LEFT,
         BRACKET_RIGHT,
         BREAK,
@@ -52,7 +50,6 @@ namespace Wyvern {
         IDENTIFIER,
         IF,
 		INCREMENT,
-        INT,
         INT_LITERAL,
         LESS,
         LESS_EQUAL,

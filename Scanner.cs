@@ -39,39 +39,39 @@ namespace Wyvern
 		readonly string input;
 
 		static readonly Regex regex = new Regex(
-			@"                             
-                (?<And>             &&																								)
-              | (?<Assign>          =																					)
-			  | (?<BoolLiteral>		^(true|false)$						   															)
+			@"
+			    (?<Decrement>		--																								)			  
+			  | (?<Dif>				!=																								)
+			  | (?<Equal>			==																								)
+              | (?<Increment>       \+\+																							)
+			  | (?<GreaterEqual>	>=																								)
+              | (?<LessEqual>       <=																								)
+
+              | (?<And>             &&																								)
+              | (?<Assign>          =																								)
               | (?<BracketLeft>     \[                                                                                              )
               | (?<BracketRight>    \]                                                                                              )
 			  | (?<CharLiteral>		['](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]|(u[a-fA-F0-9]{6})))?|[^\\\n\r\t\f'""]?)[']				)
-              | (?<Comma>			,																								)
+              | (?<Comma>			[,]																								)
               | (?<Comment>         [/]{2}.*																						)
 			  | (?<CommentEnd>		.*(\*\/)																						)
 			  | (?<CommentInit>		(\/\*).*																						)
 			  | (?<CurlyLeft>		[{]																								)
 			  | (?<CurlyRight>		[}]																								)
-			  | (?<Decrement>		--																								)			  
-			  | (?<Dif>				!=																								)
 			  | (?<Div>				[/]																								)
-			  | (?<Equal>			==																								)
-			  | (?<Greater>			>																							)
-			  | (?<GreaterEqual>	>=																								)
+			  | (?<Greater>			>																								)
               | (?<Identifier>      [a-zA-Z]+\w*																					)
-              | (?<Increment>       \+\+																							)
 			  | (?<IntLiteral>		[-]?\d+																							)
-              | (?<Less>            <																							)
-              | (?<LessEqual>       <=																								)
+              | (?<Less>            <																								)
 			  | (?<Mod>				[%]																								)
               | (?<Mul>             [*]																								)
-              | (?<Neg>             -																						)
+              | (?<Neg>             -																								)
               | (?<Newline>         \n																								)
               | (?<Not>				!																								)
               | (?<Or>				[|]{2}																							)
               | (?<ParLeft>         [(]																								)
               | (?<ParRight>        [)]																								)
-              | (?<Plus>            \+																						)
+              | (?<Plus>            \+																								)
 			  | (?<Semicolon>		[;]																								)
 			  | (?<StrLiteral>		[""](([\\]([n]|[r]|[t]|[f]|[\\]|[']|[""]|([u][a-fA-F0-9]{6})))?|[^\\\n\r\t\f""']?)*[""]			)
               | (?<WhiteSpace>      \s																								)     # Must go anywhere after Newline.
@@ -84,7 +84,7 @@ namespace Wyvern
 
 		static readonly IDictionary<string, TokenCategory> keywords =
 			new Dictionary<string, TokenCategory>() {
-				{"break", TokenCategory.BOOL},
+				{"break", TokenCategory.BREAK},
 				{"else", TokenCategory.ELSE},
 				{"elseif", TokenCategory.ELSEIF},
 				{"false", TokenCategory.FALSE},
@@ -92,8 +92,7 @@ namespace Wyvern
 				{"return", TokenCategory.RETURN},
 				{"true", TokenCategory.TRUE},
 				{"var", TokenCategory.VAR},
-				{"while", TokenCategory.WHILE},
-
+				{"while", TokenCategory.WHILE}
 			};
 
 		static readonly IDictionary<string, TokenCategory> nonKeywords =
@@ -109,7 +108,6 @@ namespace Wyvern
 				// Single operators
 				{"And", TokenCategory.AND},
 				{"Assign", TokenCategory.ASSIGN},
-				{"BoolLiteral", TokenCategory.BOOL_LITERAL},
 				{"BracketLeft", TokenCategory.BRACKET_LEFT},
 				{"BracketRight", TokenCategory.BRACKET_RIGHT},
 				{"CharLiteral", TokenCategory.CHAR_LITERAL},

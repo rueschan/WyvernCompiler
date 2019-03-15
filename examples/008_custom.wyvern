@@ -8,17 +8,17 @@ var answer, n;
 var camelCase;
 var under_score;
 
-func(a, b, c) {}
+func() {}
 
 main(a, b, c) {
-    while () {
-        answer = ;
+    while (true) {
+        answer = 8;
     }
 
     func();
 
-    if (){}
-    elseif () {}
-    elseif () {}
+    if (1 == 1){}
+    elseif (boolean) {}
+    elseif (false) {}
     else {}
 }

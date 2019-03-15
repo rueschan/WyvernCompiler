@@ -49,12 +49,68 @@ namespace Wyvern
 				TokenCategory.NOT,
 				TokenCategory.IDENTIFIER,
 				TokenCategory.BRACKET_LEFT,
-				TokenCategory.BOOL_LITERAL,
+				TokenCategory.TRUE,
+				TokenCategory.FALSE,
 				TokenCategory.INT_LITERAL,
 				TokenCategory.CHAR_LITERAL,
 				TokenCategory.STR_LITERAL,
 				TokenCategory.PARENTHESIS_OPEN
 			};
+
+		static readonly ISet<TokenCategory> firstOfOpComp =
+		new HashSet<TokenCategory>() {
+				TokenCategory.EQUAL,
+				TokenCategory.DIF
+		};
+
+		static readonly ISet<TokenCategory> firstOfOpRel =
+		new HashSet<TokenCategory>() {
+				TokenCategory.LESS,
+				TokenCategory.LESS_EQUAL,
+				TokenCategory.GREATER,
+				TokenCategory.GREATER_EQUAL
+		};
+
+		static readonly ISet<TokenCategory> firstOfOpAdd =
+		new HashSet<TokenCategory>() {
+				TokenCategory.PLUS,
+				TokenCategory.NEG
+		};
+
+		static readonly ISet<TokenCategory> firstOfOpMul =
+		new HashSet<TokenCategory>() {
+				TokenCategory.MUL,
+				TokenCategory.DIV,
+				TokenCategory.MOD
+		};
+
+		static readonly ISet<TokenCategory> firstOfOpUnary =
+		new HashSet<TokenCategory>() {
+				TokenCategory.PLUS,
+				TokenCategory.NEG,
+				TokenCategory.NOT
+		};
+
+		static readonly ISet<TokenCategory> firstOfExprPrimary =
+		new HashSet<TokenCategory>() {
+				TokenCategory.IDENTIFIER,
+				TokenCategory.BRACKET_LEFT,
+				TokenCategory.TRUE,
+				TokenCategory.FALSE,
+				TokenCategory.INT_LITERAL,
+				TokenCategory.CHAR_LITERAL,
+				TokenCategory.STR_LITERAL,
+				TokenCategory.PARENTHESIS_OPEN
+		};
+
+		static readonly ISet<TokenCategory> firstOfLit =
+		new HashSet<TokenCategory>() {
+				TokenCategory.TRUE,
+				TokenCategory.FALSE,
+				TokenCategory.INT_LITERAL,
+				TokenCategory.CHAR_LITERAL,
+				TokenCategory.STR_LITERAL
+		};
 
 		IEnumerator<Token> tokenStream;
 
@@ -69,27 +125,36 @@ namespace Wyvern
 			get { return tokenStream.Current.Category; }
 		}
 
-		public Token Expect(TokenCategory category) {
-            if (CurrentToken == category) {
-                Token current = tokenStream.Current;
-                tokenStream.MoveNext();
-                return current;
-            } else {
-                throw new SyntaxError(category, tokenStream.Current);                
-            }
-        }
+		public Token Expect(TokenCategory category)
+		{
+			if (CurrentToken == category)
+			{
+				Token current = tokenStream.Current;
+				tokenStream.MoveNext();
+				return current;
+			}
+			else
+			{
+				throw new SyntaxError(category, tokenStream.Current);
+			}
+		}
 
-		public void Program() {
+		public void Program()
+		{
 			DefList();
 			Expect(TokenCategory.EOF);
 		}
-		public void DefList() {
-			while (firstOfDef.Contains(CurrentToken)) {
+		public void DefList()
+		{
+			while (firstOfDef.Contains(CurrentToken))
+			{
 				Def();
 			}
 		}
-		public void Def() {
-			switch (CurrentToken) {
+		public void Def()
+		{
+			switch (CurrentToken)
+			{
 				case TokenCategory.VAR:
 					VarDef();
 					break;
@@ -100,25 +165,31 @@ namespace Wyvern
 					throw new SyntaxError(firstOfDef, tokenStream.Current);
 			}
 		}
-		public void VarDef() {
+		public void VarDef()
+		{
 			Expect(TokenCategory.VAR);
 			VarList();
 			Expect(TokenCategory.SEMICOLON);
 		}
-		public void VarList() {
+		public void VarList()
+		{
 			IdList();
 		}
-		public void IdList() {
+		public void IdList()
+		{
 			Expect(TokenCategory.IDENTIFIER);
 			IdListCont();
 		}
-		public void IdListCont() {
-			while (CurrentToken == TokenCategory.COMMA) {
+		public void IdListCont()
+		{
+			while (CurrentToken == TokenCategory.COMMA)
+			{
 				Expect(TokenCategory.COMMA);
 				Expect(TokenCategory.IDENTIFIER);
 			}
 		}
-		public void FunDef() {
+		public void FunDef()
+		{
 			Expect(TokenCategory.IDENTIFIER);
 			Expect(TokenCategory.PARENTHESIS_OPEN);
 			ParamList();
@@ -128,26 +199,35 @@ namespace Wyvern
 			StmtList();
 			Expect(TokenCategory.CURLY_RIGHT);
 		}
-		public void ParamList() {
-			if (CurrentToken == TokenCategory.IDENTIFIER) {
+		public void ParamList()
+		{
+			if (CurrentToken == TokenCategory.IDENTIFIER)
+			{
 				IdList();
 			}
 		}
-		public void VarDefList() {
-			while (CurrentToken == TokenCategory.VAR) {
+		public void VarDefList()
+		{
+			while (CurrentToken == TokenCategory.VAR)
+			{
 				VarDef();
 			}
 		}
-		public void StmtList() {
-			while (firstOfStmt.Contains(CurrentToken)) {
+		public void StmtList()
+		{
+			while (firstOfStmt.Contains(CurrentToken))
+			{
 				Stmt();
 			}
 		}
-		public void Stmt() {
-			switch (CurrentToken) {
+		public void Stmt()
+		{
+			switch (CurrentToken)
+			{
 				case TokenCategory.IDENTIFIER:
 					Expect(TokenCategory.IDENTIFIER);
-					switch (CurrentToken) {
+					switch (CurrentToken)
+					{
 						case TokenCategory.ASSIGN:
 							StmtAssign();
 							break;
@@ -181,41 +261,51 @@ namespace Wyvern
 					throw new SyntaxError(firstOfStmt, tokenStream.Current);
 			}
 		}
-		public void StmtAssign() {
+		public void StmtAssign()
+		{
 			Expect(TokenCategory.ASSIGN);
 			Expr();
 			Expect(TokenCategory.SEMICOLON);
 		}
-		public void StmtIncr() {
+		public void StmtIncr()
+		{
 			Expect(TokenCategory.INCREMENT);
 			Expect(TokenCategory.SEMICOLON);
 		}
-		public void StmtDecr() {
+		public void StmtDecr()
+		{
 			Expect(TokenCategory.DECREMENT);
 			Expect(TokenCategory.SEMICOLON);
 		}
-		public void StmtFunCall() {
+		public void StmtFunCall()
+		{
 			FunCall();
 			Expect(TokenCategory.SEMICOLON);
 		}
-		public void FunCall() {
+		public void FunCall()
+		{
 			Expect(TokenCategory.PARENTHESIS_OPEN);
 			ExprList();
 			Expect(TokenCategory.PARENTHESIS_CLOSE);
 		}
-		public void ExprList() {
-			if (firstOfExpr.Contains(CurrentToken)) {
+		public void ExprList()
+		{
+			if (firstOfExpr.Contains(CurrentToken))
+			{
 				Expr();
 				ExprListCont();
 			}
 		}
-		public void ExprListCont() {
-			while (CurrentToken == TokenCategory.COMMA) {
+		public void ExprListCont()
+		{
+			while (CurrentToken == TokenCategory.COMMA)
+			{
 				Expect(TokenCategory.COMMA);
 				Expr();
 			}
 		}
-		public void StmtIf() {
+		public void StmtIf()
+		{
 			Expect(TokenCategory.IF);
 			Expect(TokenCategory.PARENTHESIS_OPEN);
 			Expr();
@@ -226,8 +316,10 @@ namespace Wyvern
 			ElseIfList();
 			Else();
 		}
-		public void ElseIfList() {
-			while (CurrentToken == TokenCategory.ELSEIF) {
+		public void ElseIfList()
+		{
+			while (CurrentToken == TokenCategory.ELSEIF)
+			{
 				Expect(TokenCategory.ELSEIF);
 				Expect(TokenCategory.PARENTHESIS_OPEN);
 				Expr();
@@ -237,15 +329,18 @@ namespace Wyvern
 				Expect(TokenCategory.CURLY_RIGHT);
 			}
 		}
-		public void Else() {
-			if (CurrentToken == TokenCategory.ELSE) {
+		public void Else()
+		{
+			if (CurrentToken == TokenCategory.ELSE)
+			{
 				Expect(TokenCategory.ELSE);
 				Expect(TokenCategory.CURLY_LEFT);
 				StmtList();
 				Expect(TokenCategory.CURLY_RIGHT);
 			}
 		}
-		public void StmtWhile() {
+		public void StmtWhile()
+		{
 			Expect(TokenCategory.WHILE);
 			Expect(TokenCategory.PARENTHESIS_OPEN);
 			Expr();
@@ -254,193 +349,233 @@ namespace Wyvern
 			StmtList();
 			Expect(TokenCategory.CURLY_RIGHT);
 		}
-		public void StmtBreak() {}
-		public void StmtReturn() {}
-		public void StmtEmpty() {}
-		public void Expr() {}
-		public void ExprOr() {}
-		public void ExprAnd() {}
-		public void ExprComp() {}
-		public void OpComp() {}
-		public void ExprRel() {}
-		public void OpRel() {}
-		// Pollo
-		public void ExprAdd() {}
-		public void OpAdd() {}
-		public void ExprMul() {}
-		public void OpMul() {}
-		public void ExprUnary() {}
-		public void OpUnary() {}
-		public void ExprPrimary() {}
-		public void OpPrimary() {}
-		public void Array() {}
-		public void Lit() {}
-
-		// public void Program()
-		// {
-
-		// 	while (firstOfDeclaration.Contains(CurrentToken))
-		// 	{
-		// 		Declaration();
-		// 	}
-
-		// 	while (firstOfStatement.Contains(CurrentToken))
-		// 	{
-		// 		Statement();
-		// 	}
-
-		// 	Expect(TokenCategory.EOF);
-		// }
-
-		// public void Declaration()
-		// {
-		// 	Type();
-		// 	Expect(TokenCategory.IDENTIFIER);
-		// }
-
-		// public void Statement()
-		// {
-
-		// 	switch (CurrentToken)
-		// 	{
-
-		// 		case TokenCategory.IDENTIFIER:
-		// 			Assignment();
-		// 			break;
-
-		// 		case TokenCategory.PRINT:
-		// 			Print();
-		// 			break;
-
-		// 		case TokenCategory.IF:
-		// 			If();
-		// 			break;
-
-		// 		default:
-		// 			throw new SyntaxError(firstOfStatement,
-		// 								  tokenStream.Current);
-		// 	}
-		// }
-
-		// public void Type()
-		// {
-		// 	switch (CurrentToken)
-		// 	{
-
-		// 		case TokenCategory.INT:
-		// 			Expect(TokenCategory.INT);
-		// 			break;
-
-		// 		case TokenCategory.BOOL:
-		// 			Expect(TokenCategory.BOOL);
-		// 			break;
-
-		// 		default:
-		// 			throw new SyntaxError(firstOfDeclaration,
-		// 								  tokenStream.Current);
-		// 	}
-		// }
-
-		// public void Assignment()
-		// {
-		// 	Expect(TokenCategory.IDENTIFIER);
-		// 	Expect(TokenCategory.ASSIGN);
-		// 	Expression();
-		// }
-
-		// public void Print()
-		// {
-		// 	Expect(TokenCategory.PRINT);
-		// 	Expression();
-		// }
-
-		// public void If()
-		// {
-		// 	Expect(TokenCategory.IF);
-		// 	Expression();
-		// 	Expect(TokenCategory.THEN);
-		// 	while (firstOfStatement.Contains(CurrentToken))
-		// 	{
-		// 		Statement();
-		// 	}
-		// 	Expect(TokenCategory.END);
-		// }
-
-		// public void Expression()
-		// {
-		// 	SimpleExpression();
-		// 	while (firstOfOperator.Contains(CurrentToken))
-		// 	{
-		// 		Operator();
-		// 		SimpleExpression();
-		// 	}
-		// }
-
-		// public void SimpleExpression()
-		// {
-
-		// 	switch (CurrentToken)
-		// 	{
-
-		// 		case TokenCategory.IDENTIFIER:
-		// 			Expect(TokenCategory.IDENTIFIER);
-		// 			break;
-
-		// 		case TokenCategory.INT_LITERAL:
-		// 			Expect(TokenCategory.INT_LITERAL);
-		// 			break;
-
-		// 		case TokenCategory.TRUE:
-		// 			Expect(TokenCategory.TRUE);
-		// 			break;
-
-		// 		case TokenCategory.FALSE:
-		// 			Expect(TokenCategory.FALSE);
-		// 			break;
-
-		// 		case TokenCategory.PARENTHESIS_OPEN:
-		// 			Expect(TokenCategory.PARENTHESIS_OPEN);
-		// 			Expression();
-		// 			Expect(TokenCategory.PARENTHESIS_CLOSE);
-		// 			break;
-
-		// 		case TokenCategory.NEG:
-		// 			Expect(TokenCategory.NEG);
-		// 			SimpleExpression();
-		// 			break;
-
-		// 		default:
-		// 			throw new SyntaxError(firstOfSimpleExpression,
-		// 								  tokenStream.Current);
-		// 	}
-		// }
-
-		// public void Operator()
-		// {
-
-		// 	switch (CurrentToken)
-		// 	{
-
-		// 		case TokenCategory.AND:
-		// 			Expect(TokenCategory.AND);
-		// 			break;
-
-		// 		case TokenCategory.LESS:
-		// 			Expect(TokenCategory.LESS);
-		// 			break;
-
-		// 		case TokenCategory.PLUS:
-		// 			Expect(TokenCategory.PLUS);
-		// 			break;
-
-		// 		case TokenCategory.MUL:
-		// 			Expect(TokenCategory.MUL);
-		// 			break;
-
-		// 		default:
-		// 			throw new SyntaxError(firstOfOperator,
-		// 								  tokenStream.Current);
-		// 	}
-		// }
+		public void StmtBreak()
+		{
+			Expect(TokenCategory.BREAK);
+			Expect(TokenCategory.SEMICOLON);
+		}
+		public void StmtReturn()
+		{
+			Expect(TokenCategory.RETURN);
+			Expr();
+			Expect(TokenCategory.SEMICOLON);
+		}
+		public void StmtEmpty()
+		{
+			Expect(TokenCategory.SEMICOLON);
+		}
+		public void Expr()
+		{
+			ExprOr();
+		}
+		public void ExprOr()
+		{
+			ExprAnd();
+			while (CurrentToken == TokenCategory.OR)
+			{
+				Expect(TokenCategory.OR);
+				ExprAnd();
+			}
+		}
+		public void ExprAnd()
+		{
+			ExprComp();
+			while (CurrentToken == TokenCategory.AND)
+			{
+				Expect(TokenCategory.AND);
+				ExprComp();
+			}
+		}
+		public void ExprComp()
+		{
+			ExprRel();
+			while (firstOfOpComp.Contains(CurrentToken))
+			{
+				OpComp();
+				ExprRel();
+			}
+		}
+		public void OpComp()
+		{
+			switch (CurrentToken)
+			{
+				case TokenCategory.EQUAL:
+					Expect(TokenCategory.EQUAL);
+					break;
+				case TokenCategory.DIF:
+					Expect(TokenCategory.DIF);
+					break;
+				default:
+					throw new SyntaxError(firstOfOpComp, tokenStream.Current);
+			}
+		}
+		public void ExprRel()
+		{
+			ExprAdd();
+			while (firstOfOpRel.Contains(CurrentToken))
+			{
+				OpRel();
+				ExprAdd();
+			}
+		}
+		public void OpRel()
+		{
+			switch (CurrentToken)
+			{
+				case TokenCategory.LESS:
+					Expect(TokenCategory.LESS);
+					break;
+				case TokenCategory.LESS_EQUAL:
+					Expect(TokenCategory.LESS_EQUAL);
+					break;
+				case TokenCategory.GREATER:
+					Expect(TokenCategory.GREATER);
+					break;
+				case TokenCategory.GREATER_EQUAL:
+					Expect(TokenCategory.GREATER_EQUAL);
+					break;
+				default:
+					throw new SyntaxError(firstOfOpRel, tokenStream.Current);
+			}
+		}
+		public void ExprAdd()
+		{
+			ExprMul();
+			while (firstOfOpAdd.Contains(CurrentToken))
+			{
+				OpAdd();
+				ExprMul();
+			}
+		}
+		public void OpAdd()
+		{
+			switch (CurrentToken)
+			{
+				case TokenCategory.PLUS:
+					Expect(TokenCategory.PLUS);
+					break;
+				case TokenCategory.NEG:
+					Expect(TokenCategory.NEG);
+					break;
+				default:
+					throw new SyntaxError(firstOfOpAdd, tokenStream.Current);
+			}
+		}
+		public void ExprMul()
+		{
+			ExprUnary();
+			while (firstOfOpMul.Contains(CurrentToken))
+			{
+				OpMul();
+				ExprUnary();
+			}
+		}
+		public void OpMul()
+		{
+			switch (CurrentToken)
+			{
+				case TokenCategory.MUL:
+					Expect(TokenCategory.MUL);
+					break;
+				case TokenCategory.DIV:
+					Expect(TokenCategory.DIV);
+					break;
+				case TokenCategory.MOD:
+					Expect(TokenCategory.MOD);
+					break;
+				default:
+					throw new SyntaxError(firstOfOpMul, tokenStream.Current);
+			}
+		}
+		public void ExprUnary()
+		{
+			while (firstOfOpUnary.Contains(CurrentToken))
+			{
+				OpUnary();
+			}
+			ExprPrimary();
+		}
+		public void OpUnary()
+		{
+			switch (CurrentToken)
+			{
+				case TokenCategory.PLUS:
+					Expect(TokenCategory.PLUS);
+					break;
+				case TokenCategory.NEG:
+					Expect(TokenCategory.NEG);
+					break;
+				case TokenCategory.NOT:
+					Expect(TokenCategory.NOT);
+					break;
+				default:
+					throw new SyntaxError(firstOfOpUnary, tokenStream.Current);
+			}
+		}
+		public void ExprPrimary()
+		{
+			switch (CurrentToken)
+			{
+				case TokenCategory.IDENTIFIER:
+					Expect(TokenCategory.IDENTIFIER);
+					if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
+					{
+						FunCall();
+					}
+					break;
+				case TokenCategory.BRACKET_LEFT:
+					Array();
+					break;
+				case TokenCategory.TRUE:
+				case TokenCategory.FALSE:
+					Lit();
+					break;
+				case TokenCategory.INT_LITERAL:
+					Lit();
+					break;
+				case TokenCategory.CHAR_LITERAL:
+					Lit();
+					break;
+				case TokenCategory.STR_LITERAL:
+					Lit();
+					break;
+				case TokenCategory.PARENTHESIS_OPEN:
+					Expect(TokenCategory.PARENTHESIS_OPEN);
+					Expr();
+					Expect(TokenCategory.PARENTHESIS_CLOSE);
+					break;
+				default:
+					throw new SyntaxError(firstOfExprPrimary, tokenStream.Current);
+			}
+		}
+		public void Array()
+		{
+			Expect(TokenCategory.BRACKET_LEFT);
+			ExprList();
+			Expect(TokenCategory.BRACKET_RIGHT);
+		}
+		public void Lit()
+		{
+			switch (CurrentToken)
+			{
+				case TokenCategory.TRUE:
+					Expect(TokenCategory.TRUE);
+					break;
+				case TokenCategory.FALSE:
+					Expect(TokenCategory.FALSE);
+					break;
+				case TokenCategory.INT_LITERAL:
+					Expect(TokenCategory.INT_LITERAL);
+					break;
+				case TokenCategory.CHAR_LITERAL:
+					Expect(TokenCategory.CHAR_LITERAL);
+					break;
+				case TokenCategory.STR_LITERAL:
+					Expect(TokenCategory.STR_LITERAL);
+					break;
+				default:
+					throw new SyntaxError(firstOfLit, tokenStream.Current);
+			}
+		}
 	}
 }
