@@ -1,9 +1,9 @@
 /* TokenCategory.cs
  * Wyvern Compiler
  * Authors:
- *			A01370880 Rubén Escalante Chan
+ *			A01370880 Rubï¿½n Escalante Chan
  *			A01371036 Santiago Nakakawa Bernal
- *			A01371240 Iván Rangel Varela
+ *			A01371240 Ivï¿½n Rangel Varela
  */
 
 /*

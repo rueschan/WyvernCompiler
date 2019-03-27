@@ -1,3 +1,11 @@
+/* SyntaxError.cs
+ * Wyvern Compiler
+ * Authors:
+ *			A01370880 Rub�n Escalante Chan
+ *			A01371036 Santiago Nakakawa Bernal
+ *			A01371240 Iv�n Rangel Varela
+ */
+
 /*
   Wyvern compiler - Syntax error exception class.
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM
