@@ -147,64 +147,87 @@ namespace Wyvern
 			}
 		}
 
-		public void Program()
+		public Node Program()
 		{
-			DefList();
+			var defList = DefList();
 			Expect(TokenCategory.EOF);
+
+			return new Program() { defList };
 		}
-		public void DefList()
+		public Node DefList()
 		{
+			var defList = new DefList();
 			while (firstOfDef.Contains(CurrentToken))
 			{
-				Def();
+				defList.Add(Def());
 			}
+
+			return defList;
 		}
-		public void Def()
+		public Node Def()
 		{
 			switch (CurrentToken)
 			{
 				case TokenCategory.VAR:
-					VarDef();
-					break;
+					return VarDef();
 				case TokenCategory.IDENTIFIER:
-					FunDef();
-					break;
+					return FunDef();
 				default:
 					throw new SyntaxError(firstOfDef, tokenStream.Current);
 			}
 		}
-		public void VarDef()
+		public Node VarDef()
 		{
-			Expect(TokenCategory.VAR);
-			VarList();
+			var varDef = new VarDef() {
+				AnchorToken = Expect(TokenCategory.VAR)
+			};
+			varDef.Add(VarList());
 			Expect(TokenCategory.SEMICOLON);
+
+			return varDef;
 		}
-		public void VarList()
+		public Node VarList()
 		{
-			IdList();
+			var varList = new VarList();
+			varList.Add(IdList());
+
+			return varList;
 		}
-		public void IdList()
+		public Node IdList()
 		{
-			Expect(TokenCategory.IDENTIFIER);
-			IdListCont();
+			var idList = new IdList();
+			idList.Add(new Identifier() {
+				AnchorToken = Expect(TokenCategory.IDENTIFIER)
+			});
+			
+			idList.Add(IdListCont());
+			
+			return idList;
 		}
-		public void IdListCont()
+		public Node IdListCont()
 		{
+			var idListCont = new IdListCont();
 			while (CurrentToken == TokenCategory.COMMA)
 			{
 				Expect(TokenCategory.COMMA);
-				Expect(TokenCategory.IDENTIFIER);
+				idListCont.Add(new Identifier() {
+					AnchorToken = Expect(TokenCategory.IDENTIFIER)
+				});
 			}
 		}
-		public void FunDef()
+		public Node FunDef()
 		{
-			Expect(TokenCategory.IDENTIFIER);
+			var funDef = new FunDef();
+			funDef.Add(new Identifier() {
+				AnchorToken = Expect(TokenCategory.IDENTIFIER)
+			});
+			
 			Expect(TokenCategory.PARENTHESIS_OPEN);
-			ParamList();
+			var paramList = ParamList();
 			Expect(TokenCategory.PARENTHESIS_CLOSE);
 			Expect(TokenCategory.CURLY_LEFT);
-			VarDefList();
-			StmtList();
+			var varDefList = VarDefList();
+			var stmtList = StmtList();
 			Expect(TokenCategory.CURLY_RIGHT);
 		}
 		public void ParamList()
