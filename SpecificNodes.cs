@@ -7,7 +7,7 @@
  */
 
 /*
-  Buttercup compiler - Specific node subclasses for the AST (Abstract 
+  Wyvern compiler - Specific node subclasses for the AST (Abstract 
   Syntax Tree).
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM
 
@@ -25,135 +25,138 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Wyvern {
+namespace Wyvern
+{
 
-    class Program: Node {}
+	class Program : Node { }
 
-    class DefList: Node {}
+	class DefList : Node { }
 
-    class Def: Node {}
+	class Def : Node { }
 
-    class VarDef: Node {}
+	class VarDef : Node { }
 
-    class VarList: Node {}
+	class VarList : Node { }
 
-    class IdList: Node {}
+	class IdList : Node { }
 
-    class IdListCont: Node {}
+	class IdListCont : Node { }
 
-    class FunDef: Node {}
+	class FunDef : Node { }
 
-    class ParamList: Node {}
+	class ParamList : Node { }
 
-    class VarDefList: Node {}
+	class VarDefList : Node { }
 
-    class StmtList: Node {}
+	class StmtList : Node { }
 
-    class Stmt: Node {}
+	class Stmt : Node { }
 
-    class StmtAssign: Node {}
+	class StmtAssign : Node { }
 
-    class StmtIncr: Node {}
+	class StmtIncr : Node { }
 
-    class StmtDecr: Node {}
+	class StmtDecr : Node { }
 
-    class StmtFunCall: Node {}
+	class StmtFunCall : Node { }
 
-    class FunCall: Node {}
+	class FunCall : Node { }
 
-    class ExprList: Node {}
+	class ExprList : Node { }
 
-    class ExprListCont: Node {}
+	class ExprListCont : Node { }
 
-    class StmtIf: Node {}
+	class StmtIf : Node { }
 
-    class ElseIfList: Node {}
-    
-    class Else: Node {}
+	class ElseIfList : Node { }
 
-    class StmtWhile: Node {}
+	class ElseIf : Node { }
 
-    class StmtBreak: Node {}
+	class Else : Node { }
 
-    class StmtReturn: Node {}
+	class StmtWhile : Node { }
 
-    class StmtEmpty: Node {}
+	class StmtBreak : Node { }
 
-    class Expr: Node {}
+	class StmtReturn : Node { }
 
-    class ExprOr: Node {}
+	class StmtEmpty : Node { }
 
-    class ExprAnd: Node {}
+	class Expr : Node { }
 
-    class ExprComp: Node {}
+	class ExprOr : Node { }
 
-    class OpComp: Node {}
+	class ExprAnd : Node { }
 
-    class ExprRel: Node {}
+	class ExprComp : Node { }
 
-    class OpRel: Node {}
+	class OpComp : Node { }
 
-    class ExprAdd: Node {}
+	class ExprRel : Node { }
 
-    class OpAdd: Node {}
+	class OpRel : Node { }
 
-    class ExprMul: Node {}
+	class ExprAdd : Node { }
 
-    class OpMul: Node {}
+	class OpAdd : Node { }
 
-    class ExprUnary: Node {}
+	class ExprMul : Node { }
 
-    class OpUnary: Node {}
+	class OpMul : Node { }
 
-    class ExprPrimary: Node {}
+	class ExprUnary : Node { }
 
-    class Array: Node {}
+	class OpUnary : Node { }
 
-    class Lit: Node {}
+	class ExprPrimary : Node { }
 
-    // Tokens
-    class And: Node {}
+	class ArrayToken : Node { }
 
-    class CharLiteral: Node {}
+	class Lit : Node { }
 
-    class Decrement: Node {}
+	// Tokens
+	class And : Node { }
 
-    class Dif: Node {}
+	class CharLiteral : Node { }
 
-    class Div: Node {}
+	class Decrement : Node { }
 
-    class Equal: Node {}
+	class Dif : Node { }
 
-    class False: Node {}
+	class Div : Node { }
 
-    class Greater: Node {}
+	class Equal : Node { }
 
-    class GreaterEqual: Node {}
+	class False : Node { }
 
-    class Identifier: Node {}
+	class Greater : Node { }
 
-    class Increment: Node {}
+	class GreaterEqual : Node { }
 
-    class IntLiteral: Node {}
+	class Identifier : Node { }
 
-    class Less: Node {}
+	class Increment : Node { }
 
-    class LessEqual: Node {}
+	class IntLiteral : Node { }
 
-    class Mod: Node {}
+	class Less : Node { }
 
-    class Mul: Node {}
+	class LessEqual : Node { }
 
-    class Neg: Node {}
+	class Mod : Node { }
 
-    class Not: Node {}
+	class Mul : Node { }
 
-    class Or: Node {}
+	class Neg : Node { }
 
-    class Plus: Node {}
+	class Not : Node { }
 
-    class StrLiteral: Node {}
+	class Or : Node { }
 
-    class True: Node {}
-    
+	class Plus : Node { }
+
+	class StrLiteral : Node { }
+
+	class True : Node { }
+
 }

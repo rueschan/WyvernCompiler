@@ -4,14 +4,16 @@
  * (C) 2019 Ariel Ortiz, ITESM CEM
  */
 
-var answer, n;
-var camelCase;
-var under_score;
+var a, b, c;
+var x;
 
-func() {}
+func(a, b) {
+	var a, b;
+	var c;
+}
 
 main(a, b, c) {
-    while (true) {
+    while (true || true || 1 == 1 && 2 != +-!5 && false) {
         answer = 8;
     }
 
