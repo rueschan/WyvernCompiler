@@ -32,6 +32,10 @@ namespace Wyvern {
             }
         }
 
+        public int CountChildren() {
+            return children.Count;
+        } 
+
         public Token AnchorToken { get; set; }
 
         public void Add(Node node) {

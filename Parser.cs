@@ -487,7 +487,6 @@ namespace Wyvern
 			Expect(TokenCategory.SEMICOLON);
 
 			return stmtReturn;
-
 		}
 		public Node StmtEmpty()
 		{
@@ -653,13 +652,13 @@ namespace Wyvern
 		{
 			var currentExpr = ExprUnary();
 
-			while (firstOfOpUnary.Contains(CurrentToken))
+			while (firstOfOpMul.Contains(CurrentToken))
 			{
-				var opUnary = OpUnary();
-				opUnary.Add(currentExpr);
-				opUnary.Add(ExprUnary());
+				var opMul = OpMul();
+				opMul.Add(currentExpr);
+				opMul.Add(ExprUnary());
 
-				currentExpr = opUnary;
+				currentExpr = opMul;
 			}
 
 			return currentExpr;

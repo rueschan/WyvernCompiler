@@ -34,12 +34,14 @@ namespace Wyvern
   public class Driver
   {
 
-    const string VERSION = "0.1";
+    const string VERSION = "0.4";
 
     //-----------------------------------------------------------
     static readonly string[] ReleaseIncludes = {
             "Lexical analysis",
-            "Syntactic analysis"
+            "Syntactic analysis",
+            "AST construction",
+            "Semantic analysis"
         };
 
     //-----------------------------------------------------------
@@ -82,74 +84,122 @@ namespace Wyvern
       }
 
       // ********* Lexical *********
-      try
-      {
-        var inputPath = args[0];
-        var input = File.ReadAllText(inputPath);
+      // try
+      // {
+      //   var inputPath = args[0];
+      //   var input = File.ReadAllText(inputPath);
 
-        Console.WriteLine(String.Format(
-          "===== Tokens from: \"{0}\" =====", inputPath)
-        );
-        var count = 1;
-        foreach (var tok in new Scanner(input).Start())
-        {
-          Console.WriteLine(String.Format("[{0}] {1}",
-                          count++, tok)
-          );
-        }
+      //   Console.WriteLine(String.Format(
+      //     "===== Tokens from: \"{0}\" =====", inputPath)
+      //   );
+      //   var count = 1;
+      //   foreach (var tok in new Scanner(input).Start())
+      //   {
+      //     Console.WriteLine(String.Format("[{0}] {1}",
+      //                     count++, tok)
+      //     );
+      //   }
 
-      }
-      catch (FileNotFoundException e)
-      {
-        Console.Error.WriteLine(e.Message);
-        Environment.Exit(1);
-      }
+      // }
+      // catch (FileNotFoundException e)
+      // {
+      //   Console.Error.WriteLine(e.Message);
+      //   Environment.Exit(1);
+      // }
 
-      Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
+      // Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
 
       // ********* Syntactic *********
-      try
-      {
-        var inputPath = args[0];
-        var input = File.ReadAllText(inputPath);
-        var parser = new Parser(new Scanner(input).Start().GetEnumerator());
-        parser.Program();
-        Console.WriteLine("Syntax OK.");
+      // try
+      // {
+      //   var inputPath = args[0];
+      //   var input = File.ReadAllText(inputPath);
+      //   var parser = new Parser(new Scanner(input).Start().GetEnumerator());
+      //   parser.Program();
+      //   Console.WriteLine("Syntax OK.");
 
-      }
-      catch (Exception e)
-      {
+      // }
+      // catch (Exception e)
+      // {
 
-        if (e is FileNotFoundException || e is SyntaxError)
-        {
-          Console.Error.WriteLine(e.Message);
-          Environment.Exit(1);
-        }
+      //   if (e is FileNotFoundException || e is SyntaxError)
+      //   {
+      //     Console.Error.WriteLine(e.Message);
+      //     Environment.Exit(1);
+      //   }
 
-        throw;
-      }
+      //   throw;
+      // }
 
-      Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
+      // Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
 
       // ********* AST *********
+      // try
+      // {
+      //   var inputPath = args[0];
+      //   var input = File.ReadAllText(inputPath);
+      //   var parser = new Parser(new Scanner(input).Start().GetEnumerator());
+      //   var program = parser.Program();
+      //   Console.Write(program.ToStringTree());
+
+      // }
+      // catch (Exception e)
+      // {
+
+      //   if (e is FileNotFoundException || e is SyntaxError)
+      //   {
+      //     Console.Error.WriteLine(e.Message);
+      //     Environment.Exit(1);
+      //   }
+
+      //   throw;
+      // }
+
+      // Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
+
+      // ********* Semantic *********
       try
       {
         var inputPath = args[0];
         var input = File.ReadAllText(inputPath);
         var parser = new Parser(new Scanner(input).Start().GetEnumerator());
         var program = parser.Program();
-        Console.Write(program.ToStringTree());
+        Console.WriteLine("Syntax OK.");
+
+        var semantic = new SemanticAnalyzer();
+        semantic.Visit((dynamic)program);
+
+        Console.WriteLine("Semantics OK.");
+
+        Console.WriteLine();
+        Console.WriteLine("Global Symbol Table");
+        Console.WriteLine("============");
+        foreach (var entry in semantic.Globals)
+        {
+          Console.WriteLine(entry);
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Functions Symbol Table");
+        Console.WriteLine("============");
+        foreach (var entry in semantic.Functions)
+        {
+          Console.WriteLine(entry);
+        }
 
       }
       catch (Exception e)
       {
 
-        if (e is FileNotFoundException || e is SyntaxError)
+        if (e is FileNotFoundException
+            || e is SyntaxError
+            || e is SemanticError)
         {
           Console.Error.WriteLine(e.Message);
           Environment.Exit(1);
         }
 
+        Console.WriteLine(e);
         throw;
       }
     }
