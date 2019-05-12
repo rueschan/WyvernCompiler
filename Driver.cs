@@ -38,11 +38,11 @@ namespace Wyvern
 
     //-----------------------------------------------------------
     static readonly string[] ReleaseIncludes = {
-            "Lexical analysis",
-            "Syntactic analysis",
-            "AST construction",
-            "Semantic analysis"
-        };
+      "Lexical analysis",
+      "Syntactic analysis",
+      "AST construction",
+      "Semantic analysis"
+    };
 
     //-----------------------------------------------------------
     void PrintAppHeader()
@@ -51,9 +51,9 @@ namespace Wyvern
       Console.WriteLine("Copyright \u00A9 2013 by A. Ortiz, ITESM CEM."
       );
       Console.WriteLine("This program is free software; you may "
-          + "redistribute it under the terms of");
+        + "redistribute it under the terms of");
       Console.WriteLine("the GNU General Public License version 3 or "
-          + "later.");
+        + "later.");
       Console.WriteLine("This program has absolutely no warranty.");
     }
 
@@ -76,10 +76,10 @@ namespace Wyvern
       PrintReleaseIncludes();
       Console.WriteLine();
 
-      if (args.Length != 1)
+      if (args.Length != 2)
       {
         Console.Error.WriteLine(
-            "Please specify the name of the input file.");
+          "Please specify the name of the input file.");
         Environment.Exit(1);
       }
 
@@ -158,48 +158,86 @@ namespace Wyvern
       // Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
 
       // ********* Semantic *********
+      //  try
+      //  {
+      //    var inputPath = args[0];
+      //    var input = File.ReadAllText(inputPath);
+      //    var parser = new Parser(new Scanner(input).Start().GetEnumerator());
+      //    var program = parser.Program();
+      //    Console.WriteLine("Syntax OK.");
+
+      //    var semantic = new SemanticAnalyzer();
+      //    semantic.Visit((dynamic)program);
+
+      //    Console.WriteLine("Semantics OK.");
+
+      //    Console.WriteLine();
+      //    Console.WriteLine("Global Symbol Table");
+      //    Console.WriteLine("============");
+      //    foreach (var entry in semantic.Globals)
+      //    {
+      //      Console.WriteLine(entry);
+      //    }
+
+      //    Console.WriteLine();
+      //    Console.WriteLine("Functions Symbol Table");
+      //    Console.WriteLine("============");
+      //    foreach (var entry in semantic.Functions)
+      //    {
+      //      Console.WriteLine(entry);
+      //    }
+
+      //  }
+      //  catch (Exception e)
+      //  {
+
+      //    if (e is FileNotFoundException
+      //        || e is SyntaxError
+      //        || e is SemanticError)
+      //    {
+      //      Console.Error.WriteLine(e.Message);
+      //      Environment.Exit(1);
+      //    }
+
+      //    Console.WriteLine(e);
+      //    throw;
+      //  }
+      //}
+
+      // ********* CIL *********
       try
       {
         var inputPath = args[0];
+        var outputPath = args[1];
         var input = File.ReadAllText(inputPath);
         var parser = new Parser(new Scanner(input).Start().GetEnumerator());
-        var program = parser.Program();
+        var ast = parser.Program();
         Console.WriteLine("Syntax OK.");
 
         var semantic = new SemanticAnalyzer();
-        semantic.Visit((dynamic)program);
-
+        semantic.Visit((dynamic)ast);
         Console.WriteLine("Semantics OK.");
 
+        var codeGenerator = new CILGenerator(semantic.Globals);
+        File.WriteAllText(
+          outputPath,
+          codeGenerator.Visit((dynamic)ast));
+        Console.WriteLine(
+          "Generated CIL code to '" + outputPath + "'.");
         Console.WriteLine();
-        Console.WriteLine("Global Symbol Table");
-        Console.WriteLine("============");
-        foreach (var entry in semantic.Globals)
-        {
-          Console.WriteLine(entry);
-        }
-
-        Console.WriteLine();
-        Console.WriteLine("Functions Symbol Table");
-        Console.WriteLine("============");
-        foreach (var entry in semantic.Functions)
-        {
-          Console.WriteLine(entry);
-        }
 
       }
       catch (Exception e)
       {
 
         if (e is FileNotFoundException
-            || e is SyntaxError
-            || e is SemanticError)
+          || e is SyntaxError
+          || e is SemanticError)
         {
           Console.Error.WriteLine(e.Message);
           Environment.Exit(1);
         }
 
-        Console.WriteLine(e);
         throw;
       }
     }

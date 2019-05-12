@@ -4,23 +4,6 @@
  * (C) 2019 Ariel Ortiz, ITESM CEM
  */
 
-var a, b, c;
-var x;
-
-func(aa, bb) {
-	var a, b;
-	var c;
-}
-
-main(a, b, c) {
-    while (true || true || 1 == 1 && 2 != +-!5 && false) {
-        answer = 8;
-    }
-
-    func();
-
-    if (1 == 1){}
-    elseif (anything) {}
-    elseif (false) {}
-    else {}
+main() {
+	printi(5);
 }

@@ -28,6 +28,7 @@ namespace Wyvern
     String current = "global";
     bool isParam = false;
     bool isDef = false;
+    int whileCount = 0;
 
     //-----------------------------------------------------------
     static readonly IDictionary<TokenCategory, Type> typeMapper =
@@ -76,7 +77,12 @@ namespace Wyvern
     //-----------------------------------------------------------
     public Type Visit(Program node)
     {
-      Visit((dynamic)node[0]);
+      Visit((dynamic) node[0]);
+
+      if (!Functions.Contains("main"))
+      {
+        throw new SemanticError("Function main was not found");
+      }
       return Type.VOID;
     }
 
@@ -89,7 +95,7 @@ namespace Wyvern
     public Type Visit(VarDef node)
     {
       isDef = true;
-      Visit((dynamic)node[0]);
+      VisitChildren(node);
       isDef = false;
 
       return Type.VOID;
@@ -105,6 +111,13 @@ namespace Wyvern
     {
       var functionName = node.AnchorToken.Lexeme;
       current = functionName;
+
+      if (functionName == "main" && node[0].CountChildren() > 0)
+      {
+        throw new SemanticError(
+                        "Function main does not expect to recieve parameters",
+                        node.AnchorToken);
+      }
 
       if (Functions.Contains(functionName))
       {
@@ -137,6 +150,7 @@ namespace Wyvern
 
     public Type Visit(ParamList node)
     {
+      VisitChildren(node);
       return Type.VOID;
     }
 
@@ -162,7 +176,8 @@ namespace Wyvern
             "Undeclared variable: " + variableName,
             node.AnchorToken);
       }
-
+      
+      VisitChildren(node);
       return Type.VOID;
     }
 
@@ -184,7 +199,7 @@ namespace Wyvern
       if (!Functions.Contains(functionName))
       {
         throw new SemanticError(
-              "Tried to call undeclared function: " + functionName,
+              "Function call to undeclared function: " + functionName,
               node.AnchorToken);
       }
 
@@ -195,7 +210,7 @@ namespace Wyvern
               node.AnchorToken);
       }
 
-      Visit((dynamic)node[0]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
@@ -207,10 +222,7 @@ namespace Wyvern
 
     public Type Visit(StmtIf node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
-      Visit((dynamic)node[2]);
-      Visit((dynamic)node[3]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
@@ -234,19 +246,27 @@ namespace Wyvern
 
     public Type Visit(StmtWhile node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      whileCount++;
+      VisitChildren(node);
+      whileCount--;
       return Type.VOID;
     }
 
     public Type Visit(StmtBreak node)
     {
+      if (whileCount <= 0)
+      {
+        throw new SemanticError(
+          "Break not in while loop",
+          node.AnchorToken);
+      }
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(StmtReturn node)
     {
-      Visit((dynamic)node[0]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
@@ -257,78 +277,67 @@ namespace Wyvern
 
     public Type Visit(Or node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(And node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(Equal node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(Dif node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(Less node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(LessEqual node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(Greater node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(GreaterEqual node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(Mul node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(Div node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
     public Type Visit(Mod node)
     {
-      Visit((dynamic)node[0]);
-      Visit((dynamic)node[1]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
@@ -346,7 +355,7 @@ namespace Wyvern
 
     public Type Visit(Not node)
     {
-      Visit((dynamic)node[0]);
+      VisitChildren(node);
       return Type.VOID;
     }
 
@@ -403,6 +412,16 @@ namespace Wyvern
 
     public Type Visit(IntLiteral node)
     {
+      try
+      {
+        Convert.ToInt32(node.AnchorToken.Lexeme);
+      }
+      catch (OverflowException)
+      {
+        throw new SemanticError(
+              "Integer exceedes 32 bits",
+              node.AnchorToken);
+      }
       return Type.INT_LITERAL;
     }
 
@@ -414,6 +433,12 @@ namespace Wyvern
     public Type Visit(StrLiteral node)
     {
       return Type.STR_LITERAL;
+    }
+
+    public Type Visit(ArrayToken node)
+    {
+      VisitChildren(node);
+      return Type.VOID;
     }
 
     //-----------------------------------------------------------

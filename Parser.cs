@@ -501,7 +501,6 @@ namespace Wyvern
 		public Node Expr()
 		{
 			return ExprOr();
-
 		}
 		public Node ExprOr()
 		{
@@ -551,7 +550,6 @@ namespace Wyvern
 
 				currentExpr = opComp;
 			}
-
 			return currentExpr;
 		}
 		public Node OpComp()
@@ -759,7 +757,11 @@ namespace Wyvern
 		}
 		public Node Array()
 		{
-			return ExprList();
+			var array = new ArrayToken();
+			Expect(TokenCategory.BRACKET_LEFT);
+			array.Add(ExprList());
+			Expect(TokenCategory.BRACKET_RIGHT);
+			return array;
 		}
 		public Node Lit()
 		{

@@ -16,8 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-wyvern.exe: Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs SemanticAnalyzer.cs SemanticError.cs SymbolTable.cs Type.cs            
-	mcs -out:wyvern.exe Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs SemanticAnalyzer.cs SemanticError.cs SymbolTable.cs Type.cs
-			
+all: wyvern.exe wyvernlib.dll
+
+wyvern.exe: Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs SemanticAnalyzer.cs SemanticError.cs SymbolTable.cs Type.cs wyvernlib.cs CILGenerator.cs
+	mcs -out:wyvern.exe Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs SemanticAnalyzer.cs SemanticError.cs SymbolTable.cs Type.cs wyvernlib.cs CILGenerator.cs
+
+wyvernlib.dll: wyvernlib.cs 
+	mcs /t:library wyvernlib.cs
+
 clean:
-	rm wyvern.exe
+	rm wyvern.exe wyvernlib.dll
