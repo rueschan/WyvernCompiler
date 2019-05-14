@@ -158,51 +158,52 @@ namespace Wyvern
       // Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
 
       // ********* Semantic *********
-      //  try
-      //  {
-      //    var inputPath = args[0];
-      //    var input = File.ReadAllText(inputPath);
-      //    var parser = new Parser(new Scanner(input).Start().GetEnumerator());
-      //    var program = parser.Program();
-      //    Console.WriteLine("Syntax OK.");
+      // try
+      // {
+      //   var inputPath = args[0];
+      //   var input = File.ReadAllText(inputPath);
+      //   var parser = new Parser(new Scanner(input).Start().GetEnumerator());
+      //   var program = parser.Program();
+      //   Console.WriteLine("Syntax OK.");
 
-      //    var semantic = new SemanticAnalyzer();
-      //    semantic.Visit((dynamic)program);
+      //   var semantic = new SemanticAnalyzer();
+      //   semantic.Visit((dynamic)program);
 
-      //    Console.WriteLine("Semantics OK.");
+      //   Console.WriteLine("Semantics OK.");
 
-      //    Console.WriteLine();
-      //    Console.WriteLine("Global Symbol Table");
-      //    Console.WriteLine("============");
-      //    foreach (var entry in semantic.Globals)
-      //    {
-      //      Console.WriteLine(entry);
-      //    }
+      //   Console.WriteLine();
+      //   Console.WriteLine("Global Symbol Table");
+      //   Console.WriteLine("============");
+      //   foreach (var entry in semantic.Globals)
+      //   {
+      //     Console.WriteLine(entry);
+      //   }
 
-      //    Console.WriteLine();
-      //    Console.WriteLine("Functions Symbol Table");
-      //    Console.WriteLine("============");
-      //    foreach (var entry in semantic.Functions)
-      //    {
-      //      Console.WriteLine(entry);
-      //    }
+      //   Console.WriteLine();
+      //   Console.WriteLine("Functions Symbol Table");
+      //   Console.WriteLine("============");
+      //   foreach (var entry in semantic.Functions)
+      //   {
+      //     Console.WriteLine(entry);
+      //   }
 
-      //  }
-      //  catch (Exception e)
-      //  {
+      // }
+      // catch (Exception e)
+      // {
 
-      //    if (e is FileNotFoundException
-      //        || e is SyntaxError
-      //        || e is SemanticError)
-      //    {
-      //      Console.Error.WriteLine(e.Message);
-      //      Environment.Exit(1);
-      //    }
+      //   if (e is FileNotFoundException
+      //       || e is SyntaxError
+      //       || e is SemanticError)
+      //   {
+      //     Console.Error.WriteLine(e.Message);
+      //     Environment.Exit(1);
+      //   }
 
-      //    Console.WriteLine(e);
-      //    throw;
-      //  }
-      //}
+      //   Console.WriteLine(e);
+      //   throw;
+      // }
+
+      // Console.WriteLine("\n--- --- --- --- --- --- --- --- --- ---\n");
 
       // ********* CIL *********
       try
@@ -213,12 +214,30 @@ namespace Wyvern
         var parser = new Parser(new Scanner(input).Start().GetEnumerator());
         var ast = parser.Program();
         Console.WriteLine("Syntax OK.");
+        Console.Write(ast.ToStringTree());
 
         var semantic = new SemanticAnalyzer();
         semantic.Visit((dynamic)ast);
         Console.WriteLine("Semantics OK.");
 
-        var codeGenerator = new CILGenerator(semantic.Globals);
+        Console.WriteLine();
+        Console.WriteLine("Global Symbol Table");
+        Console.WriteLine("============");
+        foreach (var entry in semantic.Globals)
+        {
+          Console.WriteLine(entry);
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Functions Symbol Table");
+        Console.WriteLine("============");
+        foreach (var entry in semantic.Functions)
+        {
+          Console.WriteLine(entry);
+        }
+        Console.WriteLine();
+
+        var codeGenerator = new CILGenerator(semantic.Globals, semantic.Functions);
         File.WriteAllText(
           outputPath,
           codeGenerator.Visit((dynamic)ast));
