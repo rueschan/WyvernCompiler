@@ -4,30 +4,330 @@
 
 .assembly extern 'wyvernlib' {}
 
-.class public 'WyvernProgram' extends ['mscorlib']'System'.'Object'
+.class public 'Wyvern' extends ['mscorlib']'System'.'Object'
 	{
-		.locals init (int32 'a')
-		.locals init (int32 'answer')
-		.locals init (int32 'b')
-		.locals init (int32 'x')
-		.locals init (int32 'y')
-	}
-
-	.method public static hidebysig
-		default int32 fun (int32 a) cil managed
-	{
-		.maxstack 16
-		ldc.i4.0
-		ret
-	}
-
+		.field public static int32 'answer'
 	.method public static hidebysig
 		default int32 main () cil managed
 	{
 		.entrypoint
-		.maxstack 16
+		.maxstack 8
+		ldc.i4 42
+		stsfld int32 'Wyvern'::'answer'
+		ldc.i4.0
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'New'(int32)
+		dup
+		ldc.i4 84
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 104
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 97
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 110
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 115
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 119
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 114
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 116
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 111
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 116
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 104
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 117
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 108
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 116
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 105
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 109
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 97
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 116
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 113
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 117
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 115
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 116
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 105
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 111
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 110
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 111
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 102
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 108
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 105
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 102
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 44
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Prints'(int32)
+		pop
+		ldc.i4.0
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'New'(int32)
+		dup
+		ldc.i4 116
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 104
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 117
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 110
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 105
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 118
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 114
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 115
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 44
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 97
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 110
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 100
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 118
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 101
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 114
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 121
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 116
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 104
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 105
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 110
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 103
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 58
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		dup
+		ldc.i4 32
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)
+		pop
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Prints'(int32)
+		pop
+		ldsfld int32 'Wyvern'::'answer'
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Printi'(int32)
+		pop
+		call int32 class ['wyvernlib']'Wyvern'.'Utils'::'Println'()
+		pop
 		ldc.i4.0
 		ret
 	}
-
 }

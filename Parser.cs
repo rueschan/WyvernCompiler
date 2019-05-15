@@ -750,7 +750,10 @@ namespace Wyvern
 				case TokenCategory.STR_LITERAL:
 					return Lit();
 				case TokenCategory.PARENTHESIS_OPEN:
-					return Expr();
+					Expect(TokenCategory.PARENTHESIS_OPEN);
+					var expr = Expr();
+					Expect(TokenCategory.PARENTHESIS_CLOSE);
+					return expr;
 				default:
 					throw new SyntaxError(firstOfExprPrimary, tokenStream.Current);
 			}

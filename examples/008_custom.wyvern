@@ -4,21 +4,10 @@
  * (C) 2019 Ariel Ortiz, ITESM CEM
  */
 
-var answer, x, y;
-var a;
-var b;
-
-fun(a) {
-    var x, y;
-    printi(a);
+fun() {
+    return 2;
 }
 
 main() {
-    answer = 42;
-    prints("The answer to the ultimate question of life, ");
-    prints("the universe, and everything: ");
-    printi(answer);
-    println();
-
-    fun(1);
+    printi(fun());
 }
