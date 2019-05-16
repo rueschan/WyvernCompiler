@@ -1,3 +1,11 @@
+/* Type.cs
+ * Wyvern Compiler
+ * Authors:
+ *			A01370880 Rub�n Escalante Chan
+ *			A01371036 Santiago Nakakawa Bernal
+ *			A01371240 Iv�n Rangel Varela
+ */
+
 /*
   Wyvern compiler - Data types used in the symbol table.
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM

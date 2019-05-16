@@ -1,3 +1,11 @@
+/* wyvernlib.cs
+ * Wyvern Compiler
+ * Authors:
+ *			A01370880 Rub�n Escalante Chan
+ *			A01371036 Santiago Nakakawa Bernal
+ *			A01371240 Iv�n Rangel Varela
+ */
+
 /*
   Wyvern API.
   Copyright (C) 2019 Ariel Ortiz, ITESM CEM
