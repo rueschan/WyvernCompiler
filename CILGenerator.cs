@@ -35,7 +35,9 @@ namespace Wyvern
     FunctionTable row = new FunctionTable(0);
     string functionName = "";
 
-		List<string> functionReturn = new List<string>();
+    List<string> functionReturn = new List<string>();
+    Stack<string> endIfTagStack = new Stack<string>();
+    Stack<string> whileTagStack = new Stack<string>();
 
     //-----------------------------------------------------------
     string GenerateLabel()
@@ -49,6 +51,12 @@ namespace Wyvern
     {
       this.globals = globals;
       this.functions = functions;
+
+      functionReturn.Add("readi");
+      functionReturn.Add("reads");
+      functionReturn.Add("new");
+      functionReturn.Add("size");
+      functionReturn.Add("get");
     }
 
     // **********************************************************
@@ -121,11 +129,11 @@ namespace Wyvern
       {
         if (i != node.CountChildren() - 1)
         {
-          sb.Append("int32 " + node[i].AnchorToken.Lexeme + ", ");
+          sb.Append("int32 '" + node[i].AnchorToken.Lexeme + "', ");
         }
         else
         {
-          sb.Append("int32 " + node[i].AnchorToken.Lexeme);
+          sb.Append("int32 '" + node[i].AnchorToken.Lexeme + "'");
         }
       }
       return sb.ToString();
@@ -143,7 +151,7 @@ namespace Wyvern
       var sb = new StringBuilder();
       sb.Append("\t.method public static hidebysig\n");
       sb.Append(String.Format(
-          "\t\tdefault int32 {0} (",
+          "\t\tdefault int32 '{0}' (",
           node.AnchorToken.Lexeme)
       );
       sb.Append(Visit((dynamic)node[0])); // ParamList
@@ -336,29 +344,58 @@ namespace Wyvern
       return sb.ToString();
     }
 
-    // public Type Visit(StmtIf node)
-    // {
-    //   VisitChildren(node);
-    //   return Type.VOID;
-    // }
+    public string Visit(StmtIf node)
+    {
+      var label = GenerateLabel();
+      var endTag = GenerateLabel();
 
-    // public Type Visit(ElseIfList node)
-    // {
-    //   VisitChildren(node);
-    //   return Type.VOID;
-    // }
+      endIfTagStack.Push(endTag);
 
-    // public Type Visit(ElseIf node)
-    // {
-    //   VisitChildren(node);
-    //   return Type.VOID;
-    // }
+      StringBuilder sb = new StringBuilder();
 
-    // public Type Visit(Else node)
-    // {
-    //   VisitChildren(node);
-    //   return Type.VOID;
-    // }
+      sb.Append(String.Format(
+        "{1}\t\tbrfalse '{0}'\n{2}\n\tbr '{3}'\n\t'{0}':\n",
+        label,
+        Visit((dynamic)node[0]),
+        Visit((dynamic)node[1]),
+        endTag
+      ));
+      sb.Append(Visit((dynamic)node[2]));	// ElseIfList
+      sb.Append(Visit((dynamic)node[3]));	// Else
+
+      return sb.ToString();
+    }
+
+    public string Visit(ElseIfList node)
+    {
+      StringBuilder sb = new StringBuilder();
+      sb.Append(VisitChildren(node));
+      return sb.ToString();
+    }
+
+    public string Visit(ElseIf node)
+    {
+      var label = GenerateLabel();
+      StringBuilder sb = new StringBuilder();
+
+      sb.Append(String.Format(
+        "{1}\t\tbrfalse '{0}'\n{2}\n\tbr '{3}'\n\t'{0}':\n",
+        label,
+        Visit((dynamic)node[0]),
+        Visit((dynamic)node[1]),
+        endIfTagStack.Peek()
+      ));
+
+      return sb.ToString();
+    }
+
+    public string Visit(Else node)
+    {
+      var sb = new StringBuilder();
+      sb.Append(VisitChildren(node));
+      sb.Append("\t'" + endIfTagStack.Pop() + "':\n");
+      return sb.ToString();
+    }
 
     public string Visit(StmtWhile node)
     {
@@ -366,6 +403,7 @@ namespace Wyvern
 
       var a = GenerateLabel();
       var b = GenerateLabel();
+      whileTagStack.Push(b);
 
       sb.Append("\t" + a + ":\n");
       sb.Append(Visit((dynamic)node[0])); // Comparations
@@ -374,20 +412,20 @@ namespace Wyvern
       sb.Append("\t\tbr " + a + "\n");
       sb.Append("\t" + b + ":\n");
 
+      try
+      {
+        whileTagStack.Pop();
+      }
+      catch (InvalidOperationException e) { }
+
+
       return sb.ToString();
     }
 
-    // public Type Visit(StmtBreak node)
-    // {
-    //   if (whileCount <= 0)
-    //   {
-    //     throw new SemanticError(
-    //       "Break not in while loop",
-    //       node.AnchorToken);
-    //   }
-    //   VisitChildren(node);
-    //   return Type.VOID;
-    // }
+    public string Visit(StmtBreak node)
+    {
+      return "\t\tbr " + whileTagStack.Pop() + "\n";
+    }
 
     public string Visit(StmtReturn node)
     {
@@ -401,7 +439,6 @@ namespace Wyvern
     // {
     //   return Type.VOID;
     // }
-
 
     public string Visit(Or node)
     {
@@ -557,10 +594,54 @@ namespace Wyvern
       return sb.ToString();
     }
 
-    // public Type Visit(CharLiteral node)
-    // {
-    //   return Type.CHAR_LITERAL;
-    // }
+    public string Visit(CharLiteral node)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      var cleanChar = node.AnchorToken.Lexeme
+      .Substring(
+        1,
+        node.AnchorToken.Lexeme.Length - 2
+      );
+      var value = 0;
+
+      switch (cleanChar)
+      {
+        case "\\n":
+          value = 10;
+          break;
+        case "\\r":
+          value = 13;
+          break;
+        case "\\t":
+          value = 9;
+          break;
+        case "\\\\":
+          value = 92;
+          break;
+        case "\\'":
+          value = 39;
+          break;
+        case "\\\"":
+          value = 34;
+          break;
+
+        default:
+          if (cleanChar.Contains("\\u"))
+          {
+            value = Convert.ToInt32(cleanChar.Substring(2), 16);
+          }
+          else
+          {
+            value = Convert.ToInt32(Convert.ToChar(cleanChar));
+          }
+          break;
+      }
+
+      sb.Append(String.Format("\t\tldc.i4 {0}\n", value));
+
+      return sb.ToString();
+    }
 
     public string Visit(StrLiteral node)
     {
@@ -568,53 +649,82 @@ namespace Wyvern
 
       sb.Append("\t\tldc.i4.0\n");
       sb.Append("\t\tcall int32 class ['wyvernlib']'Wyvern'.'Utils'::'New'(int32)\n");
-      foreach (var c in node.AnchorToken.Lexeme.ToCharArray())
-      {
-        if (c == '"') continue;
-        sb.Append("\t\tdup\n");
-        var unicode = Convert.ToInt32(c);
 
-        sb.Append(String.Format("\t\tldc.i4 {0}\n", unicode));
+      var characters = node.AnchorToken.Lexeme.ToCharArray();
+      string u = "";
+      var value = 0;
+      for (int i = 1; i < characters.Length - 1; i++)
+      {
+        var c = characters[i];
+        var cleanChar = node.AnchorToken.Lexeme.Substring(i, 2);
+
+        switch (cleanChar)
+        {
+          case "\\n":
+            value = 10;
+            i += 1;
+            break;
+          case "\\r":
+            value = 13;
+            i += 1;
+            break;
+          case "\\t":
+            value = 9;
+            i += 1;
+            break;
+          case "\\\\":
+            value = 92;
+            i += 1;
+            break;
+          case "\\'":
+            value = 39;
+            i += 1;
+            break;
+          case "\\\"":
+            value = 34;
+            i += 1;
+            break;
+
+          default:
+            if (cleanChar.Contains("\\u"))
+            {
+              u = node.AnchorToken.Lexeme.Substring(i, 8);
+              i += 7;
+
+              value = Convert.ToInt32(u.Substring(2), 16);
+            }
+            else
+            {
+              value = Convert.ToInt32(c);
+            }
+            break;
+        }
+
+        sb.Append("\t\tdup\n");
+        sb.Append(String.Format("\t\tldc.i4 {0}\n", value));
+        sb.Append("\t\tcall int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)\n");
+        sb.Append("\t\tpop\n");
+      }
+
+      return sb.ToString();
+    }
+
+    public string Visit(ArrayToken node)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      sb.Append("\t\tldc.i4.0\n");
+      sb.Append("\t\tcall int32 class ['wyvernlib']'Wyvern'.'Utils'::'New'(int32)\n");
+      foreach (var element in node[0])
+      {
+        sb.Append("\t\tdup\n");
+
+        sb.Append(Visit((dynamic)element));
         sb.Append("\t\tcall int32 class ['wyvernlib']'Wyvern'.'Utils'::'Add'(int32, int32)\n");
         sb.Append("\t\tpop\n");
       }
       return sb.ToString();
     }
-
-    // public Type Visit(ArrayToken node)
-    // {
-    //   VisitChildren(node);
-    //   return Type.VOID;
-    // }
-
-    // void VisitChildren(Node node)
-    // {
-    //   foreach (var n in node)
-    //   {
-    //     Visit((dynamic)n);
-    //   }
-    // }
-
-
-    // ***********************************************************
-    // ***********************************************************
-    // ***********************************************************
-    // ***********************************************************
-    // ***********************************************************
-
-    ////-----------------------------------------------------------
-    //public string Visit(If node)
-    //{
-
-    //	var label = GenerateLabel();
-
-    //	return String.Format(
-    //		"{1}\t\tbrfalse '{0}'\n{2}\t'{0}':\n",
-    //		label,
-    //		Visit((dynamic)node[0]),
-    //		Visit((dynamic)node[1])
-    //	);
-    //}
 
     ////-----------------------------------------------------------
     string VisitChildren(Node node)
